@@ -1,0 +1,81 @@
+<!-- navbar.html -->
+<link rel="stylesheet" href="/static/style.css">
+<div class="header-logo">
+  <img src="/static/university_logo.png" alt="University Logo">
+</div>
+<nav class="main-nav">
+  <div class="nav-container">
+    <a href="{{ url_for('index') }}" class="brand-title">Placement Cell</a>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffd600" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+      </svg>
+    </button>
+    <div class="nav-menu" id="nav-menu">
+      <a href="https://www.igntu.ac.in/" target="_blank" class="nav-link" title="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffd600" class="bi bi-house-door-fill" viewBox="0 0 16 16" style="margin-right: 0;">
+          <path d="M6.5 14.5v-3h3v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V7.707a1 1 0 0 0-.293-.707l-6-6a1 1 0 0 0-1.414 0l-6 6A1 1 0 0 0 1 7.707V14.5a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/>
+        </svg>
+      </a>
+      <div class="dropdown">
+        <a href="#" class="dropdown-toggle">For Recruiters <span style='font-size:0.9em;'>&#9660;</span></a>
+        <div id="recruiter-dropdown" class="dropdown-menu">
+          <a href="{{ url_for('academic_programs') }}" class="dropdown-item">Academic Programs</a>
+          <a href="/static/CS%20SYLLABUS.pdf" target="_blank" class="dropdown-item">Courses Syllabus</a>
+        </div>
+      </div>
+             <a href="{{ url_for('placed_students') }}" class="nav-link">Placed Students</a>
+    </div>
+  </div>
+</nav>
+<!-- Inline styles removed as they are now in style.css -->
+<script>
+  // Handle dropdown menu with smooth animation
+  document.addEventListener('click', function(e) {
+    var dropdown = document.getElementById('recruiter-dropdown');
+    if (!e.target.closest('.dropdown')) {
+      dropdown.classList.remove('show');
+      // Use setTimeout to allow animation to complete before hiding
+      setTimeout(function() {
+        dropdown.style.display = 'none';
+      }, 300); // Match transition duration in CSS
+    } else if (e.target.closest('.dropdown-toggle')) {
+      e.preventDefault();
+      if (dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
+        setTimeout(function() {
+          dropdown.style.display = 'none';
+        }, 300);
+      } else {
+        dropdown.style.display = 'block';
+        // Force reflow before adding show class for animation
+        dropdown.offsetHeight;
+        dropdown.classList.add('show');
+      }
+    }
+  });
+
+  // Mobile menu toggle with smooth animation
+  document.getElementById('menu-toggle').addEventListener('click', function() {
+    var navMenu = document.getElementById('nav-menu');
+    if (navMenu.classList.contains('active')) {
+      navMenu.classList.remove('active');
+    } else {
+      navMenu.style.display = 'flex';
+      // Force reflow before adding active class for animation
+      navMenu.offsetHeight;
+      navMenu.classList.add('active');
+    }
+  });
+
+  // Add touch feedback for better mobile experience
+  document.querySelectorAll('.nav-link, .dropdown-toggle, .dropdown-item').forEach(function(element) {
+    element.addEventListener('touchstart', function() {
+      this.classList.add('touch-active');
+    }, {passive: true});
+    
+    element.addEventListener('touchend', function() {
+      this.classList.remove('touch-active');
+    }, {passive: true});
+  });
+</script>

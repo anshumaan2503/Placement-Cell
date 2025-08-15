@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration - OTP Verification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .otp-container {
+            max-width: 500px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+        .otp-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(40,53,147,0.1);
+            overflow: hidden;
+        }
+        .otp-header {
+            background: linear-gradient(135deg, #283593, #3949ab);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .otp-body {
+            padding: 2rem;
+        }
+        .btn-verify {
+            background: linear-gradient(135deg, #ffd600, #ffed4e);
+            color: #283593;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            width: 100%;
+        }
+        .student-info {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .otp-input {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-transition"></div>
+    {% include 'navbar.html' %}
+    
+    <div class="otp-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="otp-card">
+            <div class="otp-header">
+                <h1><i class="bi bi-shield-check"></i> OTP Verification</h1>
+                <p>Enter the OTP sent to your mobile number</p>
+            </div>
+            
+            <div class="otp-body">
+                <div class="student-info">
+                    <h5><i class="bi bi-person"></i> Student Information</h5>
+                    <p class="mb-0"><strong>Name:</strong> {{ student_name }}</p>
+                </div>
+                
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Enter 6-digit OTP *</label>
+                        <input type="text" class="form-control otp-input" name="otp" required 
+                               maxlength="6" pattern="[0-9]{6}" 
+                               placeholder="000000"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6)">
+                        <div class="form-text">Enter the 6-digit OTP sent to your mobile number</div>
+                    </div>
+                    
+                    <button type="submit" class="btn-verify">
+                        <i class="bi bi-check-circle"></i> Verify OTP
+                    </button>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle"></i> 
+                        This link is valid for 5 minutes only. Contact admin if you need a new OTP.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer mt-5">
+        &copy; 2025 Department of Computer Science, IGNTU. All rights reserved.
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-focus on OTP input
+        document.querySelector('.otp-input').focus();
+        
+        // Auto-format OTP input
+        document.querySelector('.otp-input').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 6) {
+                value = value.slice(0, 6);
+            }
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>

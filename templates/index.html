@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Cell | IGNTU</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        // Add smooth scrolling to all links
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80, // Offset for fixed header
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="page-transition"></div>
+    {% include 'navbar.html' %}
+    
+    <div class="hero-image">
+        <img src="/static/department_building.jpg" alt="Department of Computer Science Building">
+    </div>
+
+    <section class="container my-5">
+        <div class="content-section">
+            <h2 class="section-title">About the Department</h2>
+            <p class="section-text">
+                The Department of Computer Science at Indira Gandhi National Tribal University (IGNTU) is a center of academic excellence dedicated to shaping the next generation of technology leaders, innovators, and researchers. Established with the vision of empowering students through a balanced blend of theoretical knowledge and practical skills, the department offers programs that keep pace with the rapidly evolving world of computing and information technology.
+            </p>
+            <p class="section-text">
+                Our academic environment encourages curiosity, creativity, and critical thinking, enabling students to master core concepts while also exploring emerging domains such as Artificial Intelligence, Machine Learning, Data Science, Cyber Security, Cloud Computing, and Software Development. The curriculum is designed to be dynamic and industry-oriented, ensuring that graduates are well-prepared to meet the demands of the global job market.
+            </p>
+            <p class="section-text">
+                The department is supported by a team of highly qualified and dedicated faculty members who bring a rich mix of academic expertise and industry experience. With state-of-the-art computer laboratories, modern learning resources, and active research initiatives, students are provided with an environment that fosters both academic and personal growth. We emphasize hands-on learning through real-world projects, internships, and collaborations with leading organizations, enabling students to translate classroom learning into impactful solutions.
+            </p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        &copy; 2025 Department of Computer Science, IGNTU. All rights reserved.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
