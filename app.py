@@ -79,7 +79,7 @@ def send_email(to_email, subject, body):
     """Send email with OTP and registration link"""
     try:
         # Check if email configuration is set up
-        if EMAIL_CONFIG['email'] == 'your-email@gmail.com' or EMAIL_CONFIG['password'] == 'your-app-password':
+        if EMAIL_CONFIG['email'] == 'your-email@gmail.com' or EMAIL_CONFIG['password'] == 'your-app-password' or True:
             # Email not configured, print to console instead
             print(f"\n{'='*60}")
             print(f"⚠️  EMAIL NOT CONFIGURED - SHOWING OTP IN CONSOLE")
