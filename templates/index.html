@@ -1,52 +1,325 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Placement Cell | IGNTU</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/static/style.css">
     <script>
-        // Add smooth scrolling to all links
-        document.addEventListener('DOMContentLoaded', function() {
+        // Enhanced smooth scrolling and animations
+        document.addEventListener('DOMContentLoaded', function () {
+            // Smooth scrolling for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
-                    
                     const targetId = this.getAttribute('href');
                     const targetElement = document.querySelector(targetId);
-                    
+
                     if (targetElement) {
                         window.scrollTo({
-                            top: targetElement.offsetTop - 80, // Offset for fixed header
+                            top: targetElement.offsetTop - 80,
                             behavior: 'smooth'
                         });
                     }
                 });
             });
+
+            // Enhanced Intersection Observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Add different animations based on element class
+                        if (entry.target.classList.contains('hero-image')) {
+                            entry.target.classList.add('animate-zoom-in');
+                        } else if (entry.target.classList.contains('content-section')) {
+                            entry.target.classList.add('animate-fade-in-up');
+                        }
+
+                        // Add stagger effect to cards
+                        const cards = entry.target.querySelectorAll('.modern-card');
+                        cards.forEach((card, index) => {
+                            setTimeout(() => {
+                                card.classList.add('animate-bounce-in');
+                                card.style.animationDelay = `${index * 0.2}s`;
+                            }, index * 100);
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for animations
+            document.querySelectorAll('.content-section, .hero-image').forEach(section => {
+                observer.observe(section);
+            });
+
+            // Add floating animation to large icons
+            document.querySelectorAll('.bi[style*="font-size: 3rem"]').forEach(icon => {
+                icon.classList.add('animate-float');
+            });
+
+            // Add parallax effect to hero image
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        const scrolled = window.pageYOffset;
+                        const heroImg = document.querySelector('.hero-image img');
+                        if (heroImg) {
+                            heroImg.style.transform = `translateY(${scrolled * 0.3}px)`;
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+
+            // Add hover effects to navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('mouseenter', function () {
+                    this.style.animation = 'pulse 0.6s ease-in-out';
+                });
+                link.addEventListener('mouseleave', function () {
+                    this.style.animation = '';
+                });
+            });
+
+            // Add click ripple effect to buttons
+            document.querySelectorAll('.modern-btn').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+
+                    this.appendChild(ripple);
+
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+
+            // Add hover animations to cards
+            document.querySelectorAll('.modern-card').forEach(card => {
+                card.addEventListener('mouseenter', function () {
+                    const icon = this.querySelector('.bi');
+                    if (icon) {
+                        icon.style.animation = 'bounce 0.6s ease-in-out';
+                    }
+                });
+                card.addEventListener('mouseleave', function () {
+                    const icon = this.querySelector('.bi');
+                    if (icon) {
+                        icon.style.animation = '';
+                    }
+                });
+            });
+
+            // Add loading animation to page
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 100);
         });
     </script>
+    <style>
+        /* Enhanced animation styles */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Enhanced hero image animation */
+        .hero-image {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-image img {
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        /* Page load animation */
+        body {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* Enhanced card hover effects */
+        .modern-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modern-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(40, 53, 147, 0.15);
+        }
+
+        /* Icon bounce effect */
+        @keyframes bounce {
+
+            0%,
+            20%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            80% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Stagger animation for content */
+        .content-section .row>div {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .content-section .row>div:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .content-section .row>div:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .content-section .row>div:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        /* Text reveal animation */
+        .section-text {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease-out forwards;
+            animation-delay: 0.7s;
+        }
+
+        /* Title animation */
+        .section-title {
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInUp 0.8s ease-out forwards;
+            animation-delay: 0.2s;
+        }
+    </style>
 </head>
+
 <body>
     <div class="page-transition"></div>
     {% include 'navbar.html' %}
-    
-    <div class="hero-image">
+
+    <div class="hero-image animate-zoom-in">
         <img src="/static/department_building.jpg" alt="Department of Computer Science Building">
     </div>
 
     <section class="container my-5">
-        <div class="content-section">
-            <h2 class="section-title">About the Department</h2>
-            <p class="section-text">
-                The Department of Computer Science at Indira Gandhi National Tribal University (IGNTU) is a center of academic excellence dedicated to shaping the next generation of technology leaders, innovators, and researchers. Established with the vision of empowering students through a balanced blend of theoretical knowledge and practical skills, the department offers programs that keep pace with the rapidly evolving world of computing and information technology.
-            </p>
-            <p class="section-text">
-                Our academic environment encourages curiosity, creativity, and critical thinking, enabling students to master core concepts while also exploring emerging domains such as Artificial Intelligence, Machine Learning, Data Science, Cyber Security, Cloud Computing, and Software Development. The curriculum is designed to be dynamic and industry-oriented, ensuring that graduates are well-prepared to meet the demands of the global job market.
-            </p>
-            <p class="section-text">
-                The department is supported by a team of highly qualified and dedicated faculty members who bring a rich mix of academic expertise and industry experience. With state-of-the-art computer laboratories, modern learning resources, and active research initiatives, students are provided with an environment that fosters both academic and personal growth. We emphasize hands-on learning through real-world projects, internships, and collaborations with leading organizations, enabling students to translate classroom learning into impactful solutions.
-            </p>
+        <div class="content-section modern-card">
+            <h2 class="section-title">
+                <i class="bi bi-mortarboard-fill" style="color: var(--primary-yellow); margin-right: 0.5rem;"></i>
+                About the Department
+            </h2>
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="modern-card p-4 h-100 hover-float">
+                        <div class="text-center mb-3">
+                            <i class="bi bi-lightbulb-fill animate-float"
+                                style="font-size: 3rem; color: var(--primary-yellow);"></i>
+                        </div>
+                        <h4 class="text-center mb-3" style="color: var(--primary-blue);">Innovation</h4>
+                        <p class="section-text text-center">
+                            Fostering creativity and critical thinking in emerging technologies like ML, and Data
+                            Science.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="modern-card p-4 h-100 hover-float">
+                        <div class="text-center mb-3">
+                            <i class="bi bi-people-fill animate-float"
+                                style="font-size: 3rem; color: var(--primary-yellow); animation-delay: 0.5s;"></i>
+                        </div>
+                        <h4 class="text-center mb-3" style="color: var(--primary-blue);">Excellence</h4>
+                        <p class="section-text text-center">
+                            Dedicated faculty with academic expertise and industry experience guiding student success.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="modern-card p-4 h-100 hover-float">
+                        <div class="text-center mb-3">
+                            <i class="bi bi-gear-fill animate-float"
+                                style="font-size: 3rem; color: var(--primary-yellow); animation-delay: 1s;"></i>
+                        </div>
+                        <h4 class="text-center mb-3" style="color: var(--primary-blue);">Practical Learning</h4>
+                        <p class="section-text text-center">
+                            Hands-on experience through real-world projects, internships, and industry collaborations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="section-text">
+                    The Department of Computer Science at Indira Gandhi National Tribal University (IGNTU) is a center
+                    of academic excellence dedicated to shaping the next generation of technology leaders, innovators,
+                    and researchers. Established with the vision of empowering students through a balanced blend of
+                    theoretical knowledge and practical skills, the department offers programs that keep pace with the
+                    rapidly evolving world of computing and information technology.
+                </p>
+                <p class="section-text">
+                    Our academic environment encourages curiosity, creativity, and critical thinking, enabling students
+                    to master core concepts while also exploring emerging domains such as Artificial Intelligence,
+                    Machine Learning, Data Science, Cyber Security, Cloud Computing, and Software Development. The
+                    curriculum is designed to be dynamic and industry-oriented, ensuring that graduates are
+                    well-prepared to meet the demands of the global job market.
+                </p>
+                <p class="section-text">
+                    The department is supported by a team of highly qualified and dedicated faculty members who bring a
+                    rich mix of academic expertise and industry experience. With state-of-the-art computer laboratories,
+                    modern learning resources, and active research initiatives, students are provided with an
+                    environment that fosters both academic and personal growth. We emphasize hands-on learning through
+                    real-world projects, internships, and collaborations with leading organizations, enabling students
+                    to translate classroom learning into impactful solutions.
+                </p>
+            </div>
+
         </div>
     </section>
 
@@ -56,4 +329,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

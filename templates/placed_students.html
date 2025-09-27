@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Placed Students | Placement Cell</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/static/style.css">
     <style>
         .students-container {
@@ -15,29 +17,68 @@
         
         .stats-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
         
         .stat-card {
-            background: linear-gradient(135deg, #283593, #3949ab);
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
             color: white;
-            padding: 1.5rem;
-            border-radius: 10px;
+            padding: 2.5rem 2rem;
+            border-radius: var(--border-radius);
             text-align: center;
-            box-shadow: 0 4px 12px rgba(40,53,147,0.15);
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 214, 0, 0.1);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-yellow), var(--light-yellow));
+        }
+        
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 214, 0, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .stat-card:hover::after {
+            left: 100%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-heavy);
         }
         
         .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.8rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: var(--primary-yellow);
         }
         
         .stat-label {
-            font-size: 1.1rem;
-            opacity: 0.9;
+            font-size: 1.2rem;
+            font-weight: 600;
+            opacity: 0.95;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .students-table {
@@ -51,7 +92,29 @@
             background: linear-gradient(135deg, #283593, #3949ab);
             color: white;
             padding: 1.5rem;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .export-buttons .btn {
+            border-radius: 20px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .export-buttons .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .table-header {
+                flex-direction: column;
+                text-align: center;
+            }
         }
         
         .table-responsive {
@@ -166,8 +229,18 @@
         
         <div class="students-table">
             <div class="table-header">
-                <h2 class="mb-0">Placed Students Database</h2>
-                <p class="mb-0 mt-2">Complete list of students who have been successfully placed</p>
+                <div>
+                    <h2 class="mb-0">Placed Students Database</h2>
+                    <p class="mb-0 mt-2">Complete list of students who have been successfully placed</p>
+                </div>
+                <div class="export-buttons">
+                    <a href="{{ url_for('export_csv') }}" class="btn btn-outline-light btn-sm me-2">
+                        <i class="bi bi-filetype-csv"></i> CSV
+                    </a>
+                    <a href="{{ url_for('export_excel') }}" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-file-earmark-excel"></i> Excel
+                    </a>
+                </div>
             </div>
             
             {% if students %}

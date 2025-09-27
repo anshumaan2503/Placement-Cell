@@ -1,81 +1,142 @@
-<!-- navbar.html -->
+<!-- Modern navbar.html -->
 <link rel="stylesheet" href="/static/style.css">
 <div class="header-logo">
   <img src="/static/university_logo.png" alt="University Logo">
 </div>
 <nav class="main-nav">
   <div class="nav-container">
-    <a href="{{ url_for('index') }}" class="brand-title">Placement Cell</a>
+    <a href="{{ url_for('index') }}" class="brand-title animate-slide-in-left">
+      <i class="bi bi-mortarboard-fill animate-pulse" style="margin-right: 0.5rem;"></i>
+      Placement Cell
+    </a>
     <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffd600" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-      </svg>
+      <i class="bi bi-list" style="font-size: 1.5rem;"></i>
     </button>
-    <div class="nav-menu" id="nav-menu">
-      <a href="https://www.igntu.ac.in/" target="_blank" class="nav-link" title="Home">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#ffd600" class="bi bi-house-door-fill" viewBox="0 0 16 16" style="margin-right: 0;">
-          <path d="M6.5 14.5v-3h3v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V7.707a1 1 0 0 0-.293-.707l-6-6a1 1 0 0 0-1.414 0l-6 6A1 1 0 0 0 1 7.707V14.5a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/>
-        </svg>
+    <div class="nav-menu animate-slide-in-right" id="nav-menu">
+      <a href="https://www.igntu.ac.in/" target="_blank" class="nav-link hover-float" title="University Home">
+        <i class="bi bi-house-door-fill animate-icon" style="margin-right: 0.7rem; font-size: 1.3rem;"></i>
+        <span class="d-none d-md-inline">University</span>
       </a>
-      <div class="dropdown">
-        <a href="#" class="dropdown-toggle">For Recruiters <span style='font-size:0.9em;'>&#9660;</span></a>
-        <div id="recruiter-dropdown" class="dropdown-menu">
-          <a href="{{ url_for('academic_programs') }}" class="dropdown-item">Academic Programs</a>
-          <a href="/static/CS%20SYLLABUS.pdf" target="_blank" class="dropdown-item">Courses Syllabus</a>
-        </div>
-      </div>
-             <a href="{{ url_for('placed_students') }}" class="nav-link">Placed Students</a>
+
+      <a href="{{ url_for('placed_students') }}" class="nav-link hover-float">
+        <i class="bi bi-trophy-fill animate-icon animate-glow" style="margin-right: 0.7rem; font-size: 1.3rem;"></i>
+        Placed Students
+      </a>
+
+      <a href="{{ url_for('contact') }}" class="nav-link hover-float">
+        <i class="bi bi-envelope-fill animate-icon" style="margin-right: 0.7rem; font-size: 1.3rem;"></i>
+        Contact
+      </a>
     </div>
   </div>
 </nav>
 <!-- Inline styles removed as they are now in style.css -->
+<style>
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    background: var(--white);
+    min-width: 220px;
+    z-index: 1000;
+    margin-top: 12px;
+    border-radius: var(--border-radius-small);
+    box-shadow: var(--shadow-medium);
+    border: 1px solid rgba(40, 53, 147, 0.1);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: var(--transition);
+  }
+
+  .dropdown-menu.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .dropdown-item {
+    color: var(--primary-blue);
+    padding: 12px 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+    font-weight: 500;
+  }
+
+  .dropdown-item:hover {
+    background: linear-gradient(135deg, var(--primary-yellow), var(--light-yellow));
+    color: var(--primary-blue);
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 768px) {
+    .dropdown-menu {
+      position: static;
+      box-shadow: none;
+      margin-top: 0;
+      border-radius: 0;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .dropdown-item {
+      color: var(--white);
+    }
+
+    .dropdown-item:hover {
+      background: rgba(255, 214, 0, 0.2);
+      color: var(--white);
+    }
+  }
+</style>
 <script>
-  // Handle dropdown menu with smooth animation
-  document.addEventListener('click', function(e) {
-    var dropdown = document.getElementById('recruiter-dropdown');
-    if (!e.target.closest('.dropdown')) {
+  function toggleDropdown(e) {
+    e.preventDefault();
+    document.getElementById('dropdownMenu').classList.toggle('show');
+  }
+  document.addEventListener('click', function (event) {
+    var dropdown = document.getElementById('dropdownMenu');
+    var toggle = document.getElementById('recruiterDropdown');
+    if (!toggle.contains(event.target) && !dropdown.contains(event.target)) {
       dropdown.classList.remove('show');
-      // Use setTimeout to allow animation to complete before hiding
-      setTimeout(function() {
-        dropdown.style.display = 'none';
-      }, 300); // Match transition duration in CSS
-    } else if (e.target.closest('.dropdown-toggle')) {
-      e.preventDefault();
-      if (dropdown.classList.contains('show')) {
-        dropdown.classList.remove('show');
-        setTimeout(function() {
-          dropdown.style.display = 'none';
-        }, 300);
+    }
+  });
+
+  // Enhanced navbar animations
+  document.addEventListener('DOMContentLoaded', function () {
+    // Add stagger animation to nav links
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach((link, index) => {
+      link.style.animationDelay = `${index * 0.1}s`;
+      link.classList.add('animate-fade-in');
+    });
+
+    // Add hover effects to menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    if (menuToggle) {
+      menuToggle.addEventListener('mouseenter', function () {
+        this.style.animation = 'pulse 0.6s ease-in-out';
+      });
+      menuToggle.addEventListener('mouseleave', function () {
+        this.style.animation = '';
+      });
+    }
+
+    // Add scroll effect to navbar
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', function () {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const navbar = document.querySelector('.main-nav');
+
+      if (scrollTop > lastScrollTop && scrollTop > 100) {
+        // Scrolling down
+        navbar.style.transform = 'translateY(-100%)';
       } else {
-        dropdown.style.display = 'block';
-        // Force reflow before adding show class for animation
-        dropdown.offsetHeight;
-        dropdown.classList.add('show');
+        // Scrolling up
+        navbar.style.transform = 'translateY(0)';
       }
-    }
-  });
-
-  // Mobile menu toggle with smooth animation
-  document.getElementById('menu-toggle').addEventListener('click', function() {
-    var navMenu = document.getElementById('nav-menu');
-    if (navMenu.classList.contains('active')) {
-      navMenu.classList.remove('active');
-    } else {
-      navMenu.style.display = 'flex';
-      // Force reflow before adding active class for animation
-      navMenu.offsetHeight;
-      navMenu.classList.add('active');
-    }
-  });
-
-  // Add touch feedback for better mobile experience
-  document.querySelectorAll('.nav-link, .dropdown-toggle, .dropdown-item').forEach(function(element) {
-    element.addEventListener('touchstart', function() {
-      this.classList.add('touch-active');
-    }, {passive: true});
-    
-    element.addEventListener('touchend', function() {
-      this.classList.remove('touch-active');
-    }, {passive: true});
+      lastScrollTop = scrollTop;
+    });
   });
 </script>

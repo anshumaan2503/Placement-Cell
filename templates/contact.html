@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Department | Placement Cell</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .contact-container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .contact-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .contact-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 214, 0, 0.1), transparent);
+            animation: headerShimmer 3s ease-in-out infinite;
+        }
+
+        .contact-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            border: 1px solid rgba(40, 53, 147, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-yellow));
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .contact-card h3 {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.5rem;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(40, 53, 147, 0.02);
+            border-radius: var(--border-radius-small);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-yellow);
+        }
+
+        .contact-item:hover {
+            background: rgba(40, 53, 147, 0.05);
+            transform: translateX(5px);
+        }
+
+        .contact-icon {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .contact-details {
+            flex: 1;
+        }
+
+        .contact-label {
+            font-weight: 600;
+            color: var(--primary-blue);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-value {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .contact-value a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .contact-value a:hover {
+            color: var(--light-blue);
+            text-decoration: underline;
+        }
+
+        .department-info {
+            background: linear-gradient(135deg, rgba(40, 53, 147, 0.05), rgba(255, 214, 0, 0.05));
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(40, 53, 147, 0.1);
+        }
+
+        .department-info h4 {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .office-hours {
+            background: var(--white);
+            border-radius: var(--border-radius-small);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-light);
+            margin-top: 1.5rem;
+        }
+
+        .office-hours h5 {
+            color: var(--primary-blue);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .hours-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(40, 53, 147, 0.1);
+        }
+
+        .hours-day {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .hours-time {
+            color: var(--text-dark);
+        }
+
+        @media (max-width: 768px) {
+            .contact-header h1 {
+                font-size: 2rem;
+            }
+
+            .contact-card {
+                padding: 1.5rem;
+            }
+
+            .contact-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .contact-icon {
+                font-size: 2rem;
+            }
+
+            .hours-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-transition"></div>
+    {% include 'navbar.html' %}
+
+    <div class="contact-container">
+        <div class="contact-header">
+            <i class="bi bi-telephone-fill"
+                style="font-size: 3rem; color: var(--primary-yellow); margin-bottom: 1rem;"></i>
+            <h1>Contact Department</h1>
+            <p style="opacity: 0.9;">Get in touch with our placement cell and department</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="contact-card animate-slide-in-left">
+                    <h3>
+                        <i class="bi bi-building-fill"></i>
+                        Department Office
+                    </h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="bi bi-envelope-fill contact-icon"></i>
+                            <div class="contact-details">
+                                <div class="contact-label">Department Email</div>
+                                <div class="contact-value">
+                                    <a href="mailto:cs@igntu.ac.in">cs@igntu.ac.in</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="bi bi-telephone-fill contact-icon"></i>
+                            <div class="contact-details">
+                                <div class="contact-label">Department Phone</div>
+                                <div class="contact-value">
+                                    <a href="tel:+917632264456">+91 9999999999999999</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="bi bi-geo-alt-fill contact-icon"></i>
+                            <div class="contact-details">
+                                <div class="contact-label">Address</div>
+                                <div class="contact-value">
+                                    Department of Computer Science<br>
+                                    Indira Gandhi National Tribal University<br>
+                                    Lalpur, Amarkantak, MP 484887
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="contact-card animate-slide-in-right">
+                    <h3>
+                        <i class="bi bi-briefcase-fill"></i>
+                        Placement Coordinator
+                    </h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="bi bi-person-fill contact-icon"></i>
+                            <div class="contact-details">
+                                <div class="contact-label">Coordinator Name</div>
+                                <div class="contact-value">Dr. [Name]</div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="bi bi-envelope-fill contact-icon"></i>
+                            <div class="contact-details">
+                                <div class="contact-label">Placement Email</div>
+                                <div class="contact-value">
+                                    <a href="mailto:placement@igntu.ac.in">placement@igntu.ac.in</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="bi bi-telephone-fill contact-icon"></i>
+                            <div class="contact-details">
+                                <div class="contact-label">Direct Phone</div>
+                                <div class="contact-value">
+                                    <a href="tel:+917632264457">+91 999999999</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="bi bi-phone-fill contact-icon"></i>
+                            <div class="contact-details">
+                                <div class="contact-label">Mobile</div>
+                                <div class="contact-value">
+                                    <a href="tel:+919876543210">+91 9999999999</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="department-info animate-fade-in-up">
+            <h4>
+                <i class="bi bi-info-circle-fill"></i>
+                Department Information
+            </h4>
+            <p class="mb-3">
+                The Department of Computer Science at IGNTU is committed to providing excellent placement opportunities
+                for our students. Our placement cell works closely with industry partners to ensure successful career
+                placements for graduates in MCA and BCA programs.
+            </p>
+            <p class="mb-0">
+                For recruitment opportunities, campus placement drives, or any placement-related queries, please feel
+                free to contact our placement coordinator or department office during working hours.
+            </p>
+
+            <div class="office-hours">
+                <h5>
+                    <i class="bi bi-clock-fill"></i>
+                    Office Hours
+                </h5>
+                <div class="hours-grid">
+                    <div class="hours-item">
+                        <span class="hours-day">Monday - Friday</span>
+                        <span class="hours-time">9:00 AM - 5:00 PM</span>
+                    </div>
+                    <div class="hours-item">
+                        <span class="hours-day">Lunch Break</span>
+                        <span class="hours-time">1:00 PM - 2:00 PM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="contact-card animate-bounce-in">
+                    <h3>
+                        <i class="bi bi-question-circle-fill"></i>
+                        Quick Contact Guide
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center p-3">
+                                <i class="bi bi-people-fill"
+                                    style="font-size: 2.5rem; color: var(--primary-yellow); margin-bottom: 1rem;"></i>
+                                <h5 style="color: var(--primary-blue);">For Students</h5>
+                                <p>Placement queries, career guidance, and job opportunities</p>
+                                <strong>placement@igntu.ac.in</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center p-3">
+                                <i class="bi bi-building-fill"
+                                    style="font-size: 2.5rem; color: var(--primary-yellow); margin-bottom: 1rem;"></i>
+                                <h5 style="color: var(--primary-blue);">For Recruiters</h5>
+                                <p>Campus recruitment, hiring partnerships, and collaboration</p>
+                                <strong>placement@igntu.ac.in</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center p-3">
+                                <i class="bi bi-mortarboard-fill"
+                                    style="font-size: 2.5rem; color: var(--primary-yellow); margin-bottom: 1rem;"></i>
+                                <h5 style="color: var(--primary-blue);">Academic Queries</h5>
+                                <p>Course information, admissions, and academic support</p>
+                                <strong>cs@igntu.ac.in</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-5">
+        &copy; 2025 Department of Computer Science, IGNTU. All rights reserved.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Enhanced animations for contact page
+        document.addEventListener('DOMContentLoaded', function () {
+            // Intersection Observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (entry.target.classList.contains('animate-slide-in-left')) {
+                            entry.target.style.animation = 'slideInLeft 0.8s ease-out forwards';
+                        } else if (entry.target.classList.contains('animate-slide-in-right')) {
+                            entry.target.style.animation = 'slideInRight 0.8s ease-out forwards';
+                        } else if (entry.target.classList.contains('animate-fade-in-up')) {
+                            entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                        } else if (entry.target.classList.contains('animate-bounce-in')) {
+                            entry.target.style.animation = 'bounceIn 0.8s ease-out forwards';
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all animated elements
+            document.querySelectorAll('.animate-slide-in-left, .animate-slide-in-right, .animate-fade-in-up, .animate-bounce-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Add click-to-copy functionality for email and phone
+            document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    const text = this.textContent;
+                    navigator.clipboard.writeText(text).then(() => {
+                        // Show temporary tooltip
+                        const tooltip = document.createElement('div');
+                        tooltip.textContent = 'Copied!';
+                        tooltip.style.cssText = `
+                            position: absolute;
+                            background: var(--primary-blue);
+                            color: white;
+                            padding: 0.5rem;
+                            border-radius: 4px;
+                            font-size: 0.8rem;
+                            z-index: 1000;
+                            pointer-events: none;
+                        `;
+                        document.body.appendChild(tooltip);
+
+                        const rect = this.getBoundingClientRect();
+                        tooltip.style.left = rect.left + 'px';
+                        tooltip.style.top = (rect.top - 40) + 'px';
+
+                        setTimeout(() => {
+                            tooltip.remove();
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

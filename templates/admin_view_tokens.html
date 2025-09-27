@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>View Registration Tokens | Admin Dashboard</title>
+    <meta name="theme-color" content="#283593">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .tokens-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .tokens-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .tokens-section {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            border: 1px solid rgba(40, 53, 147, 0.05);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #28a745, #34ce57);
+            color: white;
+            padding: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-header.expired {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+        }
+        
+        .token-card {
+            border-bottom: 1px solid rgba(40, 53, 147, 0.05);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .token-card:last-child {
+            border-bottom: none;
+        }
+        
+        .token-card:hover {
+            background: rgba(40, 53, 147, 0.02);
+        }
+        
+        .token-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+        
+        .otp-display {
+            background: linear-gradient(135deg, var(--primary-yellow), var(--light-yellow));
+            color: var(--primary-blue);
+            padding: 1rem;
+            border-radius: var(--border-radius-small);
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.3rem;
+            margin: 1rem 0;
+            box-shadow: var(--shadow-light);
+        }
+        
+        .time-remaining {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .time-remaining.expired {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-expired {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-used {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .copy-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .copy-btn:hover {
+            background: var(--light-blue);
+            transform: scale(1.05);
+        }
+        
+        .no-tokens {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, var(--primary-yellow), var(--light-yellow));
+            color: var(--primary-blue);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .refresh-btn:hover {
+            color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 214, 0, 0.3);
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .tokens-container {
+                padding: 0 0.5rem;
+            }
+            
+            .token-info {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+            
+            .otp-display {
+                font-size: 1.2rem;
+                letter-spacing: 0.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-transition"></div>
+    {% include 'navbar.html' %}
+    
+    <div class="tokens-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="tokens-header">
+            <h1><i class="bi bi-key-fill"></i> Registration Tokens & OTPs</h1>
+            <p style="opacity: 0.9; margin: 0;">View active registration links and OTP codes for testing</p>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <a href="{{ url_for('admin_dashboard') }}" class="refresh-btn">
+                <i class="bi bi-arrow-left"></i>
+                Back to Dashboard
+            </a>
+            <a href="{{ url_for('admin_view_tokens') }}" class="refresh-btn">
+                <i class="bi bi-arrow-clockwise"></i>
+                Refresh
+            </a>
+        </div>
+        
+        <!-- Active Tokens -->
+        <div class="tokens-section">
+            <div class="section-header">
+                <i class="bi bi-clock-fill"></i>
+                Active Registration Links ({{ active_tokens|length }})
+            </div>
+            
+            {% if active_tokens %}
+                {% for token in active_tokens %}
+                <div class="token-card">
+                    <div class="token-info">
+                        <div class="info-item">
+                            <span class="info-label">Student Name</span>
+                            <span class="info-value">{{ token.student_name }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Contact Method</span>
+                            <span class="info-value">
+                                <i class="bi bi-{{ 'envelope' if token.contact_method == 'email' else 'phone' }}"></i>
+                                {{ token.contact_method.title() }}
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Contact</span>
+                            <span class="info-value">{{ token.contact_value }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Status</span>
+                            <span class="status-badge status-active">Active</span>
+                        </div>
+                    </div>
+                    
+                    <div class="otp-display">
+                        OTP: {{ token.otp }}
+                        <button class="copy-btn" onclick="copyToClipboard('{{ token.otp }}')">
+                            <i class="bi bi-copy"></i> Copy
+                        </button>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div class="time-remaining" id="timer-{{ loop.index }}">
+                            <i class="bi bi-clock"></i>
+                            <span>Calculating...</span>
+                        </div>
+                        <div style="font-size: 0.9rem; color: #666;">
+                            Created: {{ token.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                        <strong>Registration Link:</strong>
+                        <div style="word-break: break-all; font-family: monospace; font-size: 0.9rem; margin-top: 0.5rem;">
+                            {{ url_for('student_self_register', token=token.token, _external=True) }}
+                        </div>
+                        
+
+                    </div>
+                </div>
+                
+                <script>
+                    // Timer for token {{ loop.index }}
+                    (function() {
+                        const expiresAt = new Date('{{ token.expires_at.isoformat() }}');
+                        const timerElement = document.getElementById('timer-{{ loop.index }}');
+                        
+                        function updateTimer() {
+                            const now = new Date();
+                            const timeLeft = expiresAt - now;
+                            
+                            if (timeLeft <= 0) {
+                                timerElement.innerHTML = '<i class="bi bi-x-circle"></i> <span>Expired</span>';
+                                timerElement.className = 'time-remaining expired';
+                                return;
+                            }
+                            
+                            const minutes = Math.floor(timeLeft / 60000);
+                            const seconds = Math.floor((timeLeft % 60000) / 1000);
+                            
+                            timerElement.innerHTML = `<i class="bi bi-clock"></i> <span>${minutes}:${seconds.toString().padStart(2, '0')} remaining</span>`;
+                            
+                            setTimeout(updateTimer, 1000);
+                        }
+                        
+                        updateTimer();
+                    })();
+                </script>
+                {% endfor %}
+            {% else %}
+                <div class="no-tokens">
+                    <i class="bi bi-clock" style="font-size: 3rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                    <h4>No Active Registration Links</h4>
+                    <p>Generate a new registration link to see OTPs here.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Recent Tokens -->
+        {% if recent_tokens %}
+        <div class="tokens-section">
+            <div class="section-header expired">
+                <i class="bi bi-archive-fill"></i>
+                Recent Expired/Used Links ({{ recent_tokens|length }})
+            </div>
+            
+            {% for token in recent_tokens %}
+            <div class="token-card">
+                <div class="token-info">
+                    <div class="info-item">
+                        <span class="info-label">Student Name</span>
+                        <span class="info-value">{{ token.student_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Contact</span>
+                        <span class="info-value">{{ token.contact_value }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status</span>
+                        <span class="status-badge {{ 'status-used' if token.used else 'status-expired' }}">
+                            {{ 'Used' if token.used else 'Expired' }}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">OTP Was</span>
+                        <span class="info-value">{{ token.otp }}</span>
+                    </div>
+                </div>
+                
+                <div style="font-size: 0.9rem; color: #666;">
+                    Created: {{ token.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                    {% if token.used %}
+                    | Used: {{ token.used_at.strftime('%Y-%m-%d %H:%M:%S') if token.used_at else 'Unknown' }}
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <footer class="footer mt-5">
+        &copy; 2025 Department of Computer Science, IGNTU. All rights reserved.
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show success feedback
+                const btn = event.target.closest('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check"></i> Copied!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                alert('OTP: ' + text);
+            });
+        }
+        
+
+        
+        // Auto-refresh every 30 seconds
+        setTimeout(() => {
+            window.location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>

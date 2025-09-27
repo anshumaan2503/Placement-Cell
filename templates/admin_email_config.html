@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Email Configuration | Admin Dashboard</title>
+    <meta name="theme-color" content="#283593">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .config-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .config-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .status-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid;
+        }
+        
+        .status-configured {
+            border-left-color: #28a745;
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        }
+        
+        .status-not-configured {
+            border-left-color: #ffc107;
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        }
+        
+        .step-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-yellow);
+        }
+        
+        .step-number {
+            background: var(--primary-blue);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .step-title {
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: var(--border-radius-small);
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, var(--primary-yellow), var(--light-yellow));
+            color: var(--primary-blue);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: var(--border-radius-small);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .warning-box h6 {
+            color: #856404;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .warning-box p {
+            color: #856404;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: var(--border-radius-small);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .success-box h6 {
+            color: #155724;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-box p {
+            color: #155724;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .btn-back {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .btn-back:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+        
+        .external-link {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .external-link:hover {
+            color: var(--light-blue);
+            text-decoration: underline;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .config-container {
+                padding: 0 0.5rem;
+            }
+            
+            .config-header {
+                padding: 2rem 1rem;
+            }
+            
+            .step-card {
+                padding: 1.5rem;
+            }
+            
+            .code-block {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-transition"></div>
+    {% include 'navbar.html' %}
+    
+    <div class="config-container">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i>
+            Back to Dashboard
+        </a>
+        
+        <div class="config-header">
+            <i class="bi bi-envelope-fill" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <h1>Email Configuration</h1>
+            <p style="opacity: 0.9; margin: 0;">Set up real email sending for OTP delivery</p>
+        </div>
+        
+        <!-- Current Status -->
+        <div class="status-card {{ 'status-configured' if email_configured else 'status-not-configured' }}">
+            {% if email_configured %}
+                <h3 style="color: #155724; margin-bottom: 1rem;">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Email Configured ✅
+                </h3>
+                <p style="color: #155724; margin: 0;">
+                    <strong>Current Email:</strong> {{ current_email }}<br>
+                    OTPs will be sent via email automatically when you generate student registration links.
+                </p>
+                
+                <div class="success-box" style="margin-top: 1rem;">
+                    <h6><i class="bi bi-info-circle-fill"></i> Test Your Setup</h6>
+                    <p>Generate a student registration link to test if emails are being sent successfully.</p>
+                </div>
+            {% else %}
+                <h3 style="color: #856404; margin-bottom: 1rem;">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    Email Not Configured ⚠️
+                </h3>
+                <p style="color: #856404; margin: 0;">
+                    <strong>Current Status:</strong> OTPs are displayed in console and admin panel<br>
+                    Follow the steps below to enable real email sending.
+                </p>
+            {% endif %}
+        </div>
+        
+        {% if not email_configured %}
+        <!-- Setup Steps -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Enable 2-Factor Authentication</h3>
+            </div>
+            <ol>
+                <li>Go to <a href="https://myaccount.google.com/" target="_blank" class="external-link">Google Account Settings</a></li>
+                <li>Click <strong>Security</strong> in the left sidebar</li>
+                <li>Find <strong>2-Step Verification</strong> and turn it <span class="highlight">ON</span></li>
+                <li>Complete the setup process (phone verification, etc.)</li>
+            </ol>
+            
+            <div class="warning-box">
+                <h6><i class="bi bi-shield-exclamation"></i> Important</h6>
+                <p>You must have 2-Factor Authentication enabled to generate App Passwords.</p>
+            </div>
+        </div>
+        
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <h3 class="step-title">Generate App Password</h3>
+            </div>
+            <ol>
+                <li>Still in <strong>Security</strong> settings</li>
+                <li>Click <strong>2-Step Verification</strong></li>
+                <li>Scroll down to <strong>App passwords</strong></li>
+                <li>Click <strong>App passwords</strong></li>
+                <li>Select:
+                    <ul>
+                        <li><strong>App:</strong> Mail</li>
+                        <li><strong>Device:</strong> Other (custom name)</li>
+                        <li><strong>Name:</strong> "IGNTU Placement Cell"</li>
+                    </ul>
+                </li>
+                <li>Click <strong>Generate</strong></li>
+                <li><span class="highlight">Copy the 16-character password</span> (like: abcd efgh ijkl mnop)</li>
+            </ol>
+        </div>
+        
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <h3 class="step-title">Update Configuration in app.py</h3>
+            </div>
+            <p>Open your <code>app.py</code> file and find this section:</p>
+            
+            <div class="code-block">
+EMAIL_CONFIG = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'smtp_server': 'smtp.gmail.com',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'smtp_port': 587,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'email': '<span style="background: #ffeb3b; color: #000;">your-email@gmail.com</span>',  # 👈 Replace this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'password': '<span style="background: #ffeb3b; color: #000;">your-app-password</span>',  # 👈 Replace this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'sender_name': 'IGNTU Placement Cell'<br>
+}
+            </div>
+            
+            <p><strong>Replace:</strong></p>
+            <ul>
+                <li><code>your-email@gmail.com</code> → Your actual Gmail address</li>
+                <li><code>your-app-password</code> → The 16-character App Password from Step 2</li>
+            </ul>
+            
+            <div class="warning-box">
+                <h6><i class="bi bi-exclamation-triangle"></i> Security Note</h6>
+                <p>Never share your App Password. It gives full access to your email account.</p>
+            </div>
+        </div>
+        
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">4</div>
+                <h3 class="step-title">Restart & Test</h3>
+            </div>
+            <ol>
+                <li><strong>Save</strong> the app.py file</li>
+                <li><strong>Restart</strong> your Flask application</li>
+                <li><strong>Test</strong> by generating a student registration link</li>
+                <li><strong>Check</strong> if the email is sent successfully</li>
+            </ol>
+            
+            <div class="success-box">
+                <h6><i class="bi bi-lightbulb"></i> Testing Tip</h6>
+                <p>Use your own email address first to test if the system is working correctly.</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Alternative Options -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number"><i class="bi bi-gear-fill"></i></div>
+                <h3 class="step-title">Alternative Email Providers</h3>
+            </div>
+            
+            <h5>Outlook/Hotmail:</h5>
+            <div class="code-block">
+'smtp_server': 'smtp-mail.outlook.com',<br>
+'smtp_port': 587,<br>
+'email': 'your-email@outlook.com',<br>
+'password': 'your-password'
+            </div>
+            
+            <h5>Yahoo Mail:</h5>
+            <div class="code-block">
+'smtp_server': 'smtp.mail.yahoo.com',<br>
+'smtp_port': 587,<br>
+'email': 'your-email@yahoo.com',<br>
+'password': 'your-app-password'  # Generate app password
+            </div>
+            
+            <div class="warning-box">
+                <h6><i class="bi bi-info-circle"></i> Professional Recommendation</h6>
+                <p>For production use, consider professional email services like SendGrid, Mailgun, or Amazon SES for better deliverability and reliability.</p>
+            </div>
+        </div>
+        
+        <!-- Current Workaround -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number"><i class="bi bi-eye-fill"></i></div>
+                <h3 class="step-title">Current Workaround (No Email Setup Needed)</h3>
+            </div>
+            <p>Until you set up email, you can still use the system:</p>
+            <ol>
+                <li><strong>Generate</strong> student registration links normally</li>
+                <li><strong>View OTPs</strong> in the <a href="{{ url_for('admin_view_tokens') }}" class="external-link">Admin OTP Viewer</a></li>
+                <li><strong>Share</strong> the link and OTP with students manually (WhatsApp, SMS, etc.)</li>
+                <li><strong>Students</strong> can register successfully using the provided OTP</li>
+            </ol>
+            
+            <div class="success-box">
+                <h6><i class="bi bi-check-circle"></i> This Works Perfectly!</h6>
+                <p>Many institutions use this manual approach for better control and security.</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer mt-5">
+        &copy; 2025 Department of Computer Science, IGNTU. All rights reserved.
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

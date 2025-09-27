@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Generate Student Registration Link | Admin Dashboard</title>
+    <meta name="theme-color" content="#283593">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+        
+        .form-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+            border: 1px solid rgba(40, 53, 147, 0.05);
+            position: relative;
+        }
+        
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-yellow));
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 214, 0, 0.1), transparent);
+            animation: headerShimmer 3s ease-in-out infinite;
+        }
+        
+        .form-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-body {
+            padding: 3rem 2.5rem;
+        }
+        
+        .form-section {
+            background: rgba(40, 53, 147, 0.02);
+            border-radius: var(--border-radius-small);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-yellow);
+        }
+        
+        .form-section h5 {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-control {
+            border: 2px solid rgba(40, 53, 147, 0.1);
+            border-radius: var(--border-radius-small);
+            padding: 1rem;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(40, 53, 147, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .btn-generate {
+            background: linear-gradient(135deg, var(--primary-yellow), var(--light-yellow));
+            color: var(--primary-blue);
+            border: none;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-generate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-generate:hover::before {
+            left: 100%;
+        }
+        
+        .btn-generate:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 214, 0, 0.4);
+        }
+        
+        .btn-back {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .btn-back:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border: 1px solid #2196f3;
+            border-radius: var(--border-radius-small);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-box h6 {
+            color: #1976d2;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-box ul {
+            color: #1976d2;
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        
+        .info-box li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 1.5rem auto;
+                padding: 0 0.5rem;
+            }
+            
+            .form-header {
+                padding: 2rem 1rem;
+            }
+            
+            .form-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-body {
+                padding: 2rem 1.5rem;
+            }
+            
+            .form-section {
+                padding: 1.5rem;
+            }
+            
+
+        }
+        
+        @media (max-width: 576px) {
+            .form-header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .form-body {
+                padding: 1.5rem 1rem;
+            }
+            
+            .form-section {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-transition"></div>
+    {% include 'navbar.html' %}
+    
+    <div class="form-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <a href="{{ url_for('admin_dashboard') }}" class="btn-back">
+            <i class="bi bi-arrow-left"></i>
+            Back to Dashboard
+        </a>
+        
+        <div class="form-card">
+            <div class="form-header">
+                <i class="bi bi-link-45deg" style="font-size: 3rem; color: var(--primary-yellow); margin-bottom: 1rem;"></i>
+                <h1>Generate Student Registration Link</h1>
+                <p style="opacity: 0.9;">Send secure registration link with OTP to students</p>
+            </div>
+            
+            <div class="form-body">
+                <div class="info-box">
+                    <h6>
+                        <i class="bi bi-info-circle-fill"></i>
+                        How it works:
+                    </h6>
+                    <ul>
+                        <li>Generate a secure registration link for a specific student</li>
+                        <li>Link expires automatically after <strong>5 minutes</strong></li>
+                        <li>Student receives OTP via email or SMS</li>
+                        <li>Student uses OTP to verify and register their placement details</li>
+                        <li>Link can only be used once</li>
+                    </ul>
+                </div>
+                
+                <form method="POST" id="generateLinkForm">
+                    <div class="form-section">
+                        <h5>
+                            <i class="bi bi-person-fill"></i>
+                            Student Information
+                        </h5>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-person"></i>
+                                Student Name *
+                            </label>
+                            <input type="text" class="form-control" name="student_name" required 
+                                   placeholder="Enter student's full name" autocomplete="name">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h5>
+                            <i class="bi bi-envelope-fill"></i>
+                            Contact Information
+                        </h5>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-envelope"></i>
+                                Email Address *
+                            </label>
+                            <input type="email" class="form-control" name="contact_value" required 
+                                   placeholder="Enter student's email address" autocomplete="email">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-generate">
+                        <i class="bi bi-send-fill" style="margin-right: 0.5rem;"></i>
+                        Generate & Send Registration Link
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer mt-5">
+        &copy; 2025 Department of Computer Science, IGNTU. All rights reserved.
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('generateLinkForm');
+            const contactInput = document.querySelector('input[name="contact_value"]');
+            
+            // Form validation
+            form.addEventListener('submit', function(e) {
+                const studentName = document.querySelector('input[name="student_name"]').value.trim();
+                const contactValue = contactInput.value.trim();
+                
+                if (!studentName || !contactValue) {
+                    e.preventDefault();
+                    alert('Please fill in all required fields.');
+                    return;
+                }
+                
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(contactValue)) {
+                    e.preventDefault();
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+                
+                // Show loading state
+                const submitBtn = document.querySelector('.btn-generate');
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating Link...';
+                submitBtn.disabled = true;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Registration Successful | IGNTU Placement Cell</title>
+    <meta name="theme-color" content="#283593">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .success-container {
+            max-width: 700px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+            text-align: center;
+        }
+        
+        .success-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+            border: 1px solid rgba(40, 53, 147, 0.05);
+            position: relative;
+        }
+        
+        .success-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4caf50, #66bb6a);
+        }
+        
+        .success-header {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .success-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: headerShimmer 3s ease-in-out infinite;
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            color: white;
+            margin-bottom: 1rem;
+            animation: bounceIn 1s ease-out;
+        }
+        
+        .success-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .success-body {
+            padding: 3rem 2rem;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            border: 2px solid #4caf50;
+            border-radius: var(--border-radius-small);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .success-message h3 {
+            color: #2e7d32;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .success-message p {
+            color: #2e7d32;
+            margin: 0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .next-steps {
+            background: rgba(40, 53, 147, 0.02);
+            border-radius: var(--border-radius-small);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-yellow);
+        }
+        
+        .next-steps h4 {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .next-steps ul {
+            color: var(--text-dark);
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .next-steps li {
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary-custom:hover {
+            color: white;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(40, 53, 147, 0.3);
+        }
+        
+        .btn-secondary-custom {
+            background: linear-gradient(135deg, var(--primary-yellow), var(--light-yellow));
+            color: var(--primary-blue);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-secondary-custom:hover {
+            color: var(--primary-blue);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 214, 0, 0.4);
+        }
+        
+        .celebration-animation {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .celebration-animation::after {
+            content: '🎉';
+            position: absolute;
+            font-size: 2rem;
+            animation: celebrate 2s ease-in-out infinite;
+            top: 20%;
+            left: 10%;
+        }
+        
+        .celebration-animation::before {
+            content: '🎊';
+            position: absolute;
+            font-size: 1.5rem;
+            animation: celebrate 2s ease-in-out infinite 0.5s;
+            top: 30%;
+            right: 15%;
+        }
+        
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes celebrate {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            25% {
+                transform: translateY(-10px) rotate(5deg);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-20px) rotate(-5deg);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translateY(-10px) rotate(3deg);
+                opacity: 0.8;
+            }
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .success-container {
+                margin: 2rem auto;
+                padding: 0 0.5rem;
+            }
+            
+            .success-header {
+                padding: 3rem 1rem;
+            }
+            
+            .success-header h1 {
+                font-size: 2rem;
+            }
+            
+            .success-icon {
+                font-size: 4rem;
+            }
+            
+            .success-body {
+                padding: 2rem 1.5rem;
+            }
+            
+            .success-message {
+                padding: 1.5rem;
+            }
+            
+            .next-steps {
+                padding: 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .success-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .success-icon {
+                font-size: 3.5rem;
+            }
+            
+            .success-body {
+                padding: 1.5rem 1rem;
+            }
+            
+            .success-message {
+                padding: 1.2rem;
+            }
+            
+            .next-steps {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-transition"></div>
+    {% include 'navbar.html' %}
+    
+    <div class="success-container">
+        <div class="success-card celebration-animation">
+            <div class="success-header">
+                <div class="success-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h1>Registration Successful!</h1>
+                <p style="opacity: 0.9; font-size: 1.1rem;">Your placement details have been recorded</p>
+            </div>
+            
+            <div class="success-body">
+                <div class="success-message">
+                    <h3>🎓 Congratulations, {{ student_name }}!</h3>
+                    <p>
+                        Your placement details have been successfully registered in the IGNTU Placement Cell database. 
+                        Your information will now be visible in our placed students directory.
+                    </p>
+                </div>
+                
+                <div class="next-steps">
+                    <h4>
+                        <i class="bi bi-list-check"></i>
+                        What happens next?
+                    </h4>
+                    <ul>
+                        <li><strong>Verification:</strong> Our placement team will verify your details within 24 hours</li>
+                        <li><strong>Database Update:</strong> Your information will appear in the public placed students list</li>
+                        <li><strong>Certificate:</strong> You may receive a placement certificate from the department</li>
+                        <li><strong>Alumni Network:</strong> You'll be added to our alumni network for future opportunities</li>
+                        <li><strong>Updates:</strong> Keep your contact information updated for important communications</li>
+                    </ul>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="{{ url_for('placed_students') }}" class="btn-primary-custom">
+                        <i class="bi bi-eye-fill"></i>
+                        View Placed Students
+                    </a>
+                    <a href="{{ url_for('index') }}" class="btn-secondary-custom">
+                        <i class="bi bi-house-fill"></i>
+                        Back to Home
+                    </a>
+                </div>
+                
+                <div style="margin-top: 3rem; padding: 1.5rem; background: #f8f9fa; border-radius: var(--border-radius-small);">
+                    <h6 style="color: var(--primary-blue); margin-bottom: 1rem;">
+                        <i class="bi bi-info-circle-fill"></i>
+                        Need Help?
+                    </h6>
+                    <p style="color: #666; margin: 0; font-size: 0.9rem;">
+                        If you have any questions or need to update your information, please contact the 
+                        <a href="{{ url_for('contact') }}" style="color: var(--primary-blue); text-decoration: none;">
+                            Placement Cell office
+                        </a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer mt-5">
+        &copy; 2025 Department of Computer Science, IGNTU. All rights reserved.
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add celebration effect
+            setTimeout(() => {
+                const successIcon = document.querySelector('.success-icon i');
+                successIcon.style.animation = 'pulse 2s ease-in-out infinite';
+            }, 1000);
+            
+            // Auto-scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

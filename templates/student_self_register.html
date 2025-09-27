@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Student Registration | IGNTU Placement Cell</title>
+    <meta name="theme-color" content="#283593">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .registration-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .registration-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+            border: 1px solid rgba(40, 53, 147, 0.05);
+            position: relative;
+        }
+        
+        .registration-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-yellow));
+        }
+        
+        .registration-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .registration-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 214, 0, 0.1), transparent);
+            animation: headerShimmer 3s ease-in-out infinite;
+        }
+        
+        .registration-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .registration-body {
+            padding: 3rem 2.5rem;
+        }
+        
+        .otp-section {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffd600;
+            border-radius: var(--border-radius-small);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .otp-section h5 {
+            color: #856404;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .otp-input {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.5rem;
+            border: 3px solid var(--primary-blue);
+            border-radius: var(--border-radius-small);
+            padding: 1rem;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        
+        .otp-input:focus {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.3);
+        }
+        
+        .form-section {
+            background: rgba(40, 53, 147, 0.02);
+            border-radius: var(--border-radius-small);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-yellow);
+        }
+        
+        .form-section h5 {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid rgba(40, 53, 147, 0.1);
+            border-radius: var(--border-radius-small);
+            padding: 1rem;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(40, 53, 147, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .btn-register {
+            background: linear-gradient(135deg, var(--primary-yellow), var(--light-yellow));
+            color: var(--primary-blue);
+            border: none;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-register::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-register:hover::before {
+            left: 100%;
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 214, 0, 0.4);
+        }
+        
+        .security-notice {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            border: 1px solid #4caf50;
+            border-radius: var(--border-radius-small);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .security-notice h6 {
+            color: #2e7d32;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .security-notice p {
+            color: #2e7d32;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .timer-display {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border: 1px solid #f44336;
+            border-radius: var(--border-radius-small);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .timer-display h6 {
+            color: #c62828;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .timer-countdown {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #c62828;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .registration-container {
+                margin: 1rem auto;
+                padding: 0 0.5rem;
+            }
+            
+            .registration-header {
+                padding: 2rem 1rem;
+            }
+            
+            .registration-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .registration-body {
+                padding: 2rem 1.5rem;
+            }
+            
+            .form-section {
+                padding: 1.5rem;
+            }
+            
+            .otp-section {
+                padding: 1.5rem;
+            }
+            
+            .otp-input {
+                font-size: 1.2rem;
+                letter-spacing: 0.3rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .registration-header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .registration-body {
+                padding: 1.5rem 1rem;
+            }
+            
+            .form-section {
+                padding: 1.2rem;
+            }
+            
+            .otp-section {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-transition"></div>
+    {% include 'navbar.html' %}
+    
+    <div class="registration-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="registration-card">
+            <div class="registration-header">
+                <i class="bi bi-person-plus-fill" style="font-size: 3rem; color: var(--primary-yellow); margin-bottom: 1rem;"></i>
+                <h1>Welcome, {{ student_name }}!</h1>
+                <p style="opacity: 0.9;">Please register your placement details</p>
+            </div>
+            
+            <div class="registration-body">
+                <div class="timer-display" id="timer-display">
+                    <h6>
+                        <i class="bi bi-clock-fill"></i>
+                        Link expires in:
+                    </h6>
+                    <div class="timer-countdown" id="countdown">5:00</div>
+                </div>
+                
+                <div class="security-notice">
+                    <h6>
+                        <i class="bi bi-shield-check-fill"></i>
+                        Secure Registration
+                    </h6>
+                    <p>This is a secure registration link generated specifically for you. Please enter the OTP you received and fill in your placement details accurately.</p>
+                </div>
+                
+                <form method="POST" id="registrationForm">
+                    <div class="otp-section">
+                        <h5>
+                            <i class="bi bi-key-fill"></i>
+                            Enter OTP Code
+                        </h5>
+                        <p style="color: #856404; margin-bottom: 1rem;">
+                            Please enter the 6-digit OTP code sent to you
+                        </p>
+                        <input type="text" class="form-control otp-input" name="otp" required 
+                               placeholder="000000" maxlength="6" pattern="[0-9]{6}" 
+                               autocomplete="one-time-code">
+                    </div>
+                    
+                    <div class="form-section">
+                        <h5>
+                            <i class="bi bi-person-fill"></i>
+                            Personal Information
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-card-text"></i>
+                                    Roll Number *
+                                </label>
+                                <input type="text" class="form-control" name="roll_number" required 
+                                       placeholder="Enter your roll number">
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-envelope"></i>
+                                    Email Address
+                                </label>
+                                <input type="email" class="form-control" name="email" 
+                                       placeholder="Enter your email address">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-phone"></i>
+                                    Phone Number
+                                </label>
+                                <input type="tel" class="form-control" name="phone" 
+                                       placeholder="Enter your phone number">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h5>
+                            <i class="bi bi-mortarboard-fill"></i>
+                            Academic Details
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-book"></i>
+                                    Branch *
+                                </label>
+                                <select class="form-select" name="branch" required>
+                                    <option value="">Select Branch</option>
+                                    <option value="MCA">MCA (Master of Computer Applications)</option>
+                                    <option value="BCA">BCA (Bachelor of Computer Applications)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-calendar-event"></i>
+                                    Placement Year *
+                                </label>
+                                <select class="form-select" name="year" required>
+                                    <option value="">Select Year</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h5>
+                            <i class="bi bi-briefcase-fill"></i>
+                            Placement Information
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-building"></i>
+                                    Company Name *
+                                </label>
+                                <input type="text" class="form-control" name="company" required 
+                                       placeholder="Enter company name">
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-currency-rupee"></i>
+                                    Package (LPA) *
+                                </label>
+                                <input type="number" class="form-control" name="package" required 
+                                       step="0.1" min="0" placeholder="e.g., 5.5">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-register">
+                        <i class="bi bi-check-circle-fill" style="margin-right: 0.5rem;"></i>
+                        Register My Details
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer mt-5">
+        &copy; 2025 Department of Computer Science, IGNTU. All rights reserved.
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            const otpInput = document.querySelector('input[name="otp"]');
+            const submitBtn = document.querySelector('.btn-register');
+            const countdownElement = document.getElementById('countdown');
+            
+            // Countdown timer (5 minutes)
+            let timeLeft = 5 * 60; // 5 minutes in seconds
+            
+            function updateCountdown() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    // Time expired
+                    document.getElementById('timer-display').innerHTML = `
+                        <h6 style="color: #c62828;">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            Link Expired
+                        </h6>
+                        <p style="color: #c62828; margin: 0;">This registration link has expired. Please contact admin for a new link.</p>
+                    `;
+                    form.style.opacity = '0.5';
+                    form.style.pointerEvents = 'none';
+                    submitBtn.disabled = true;
+                    return;
+                }
+                
+                // Change color when less than 1 minute left
+                if (timeLeft <= 60) {
+                    countdownElement.style.color = '#f44336';
+                    document.getElementById('timer-display').style.background = 'linear-gradient(135deg, #ffebee, #ffcdd2)';
+                }
+                
+                timeLeft--;
+                setTimeout(updateCountdown, 1000);
+            }
+            
+            updateCountdown();
+            
+            // OTP input formatting
+            otpInput.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '').substring(0, 6);
+            });
+            
+            // Form validation
+            form.addEventListener('submit', function(e) {
+                const otp = otpInput.value.trim();
+                const rollNumber = document.querySelector('input[name="roll_number"]').value.trim();
+                const company = document.querySelector('input[name="company"]').value.trim();
+                const packageValue = document.querySelector('input[name="package"]').value.trim();
+                const year = document.querySelector('select[name="year"]').value;
+                const branch = document.querySelector('select[name="branch"]').value;
+                
+                if (!otp || otp.length !== 6) {
+                    e.preventDefault();
+                    alert('Please enter a valid 6-digit OTP.');
+                    otpInput.focus();
+                    return;
+                }
+                
+                if (!rollNumber || !company || !packageValue || !year || !branch) {
+                    e.preventDefault();
+                    alert('Please fill in all required fields.');
+                    return;
+                }
+                
+                const pkg = parseFloat(packageValue);
+                if (isNaN(pkg) || pkg < 0) {
+                    e.preventDefault();
+                    alert('Please enter a valid package amount.');
+                    return;
+                }
+                
+                // Show loading state
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Registering...';
+                submitBtn.disabled = true;
+            });
+            
+            // Auto-focus OTP input
+            otpInput.focus();
+            
+            // Add real-time validation feedback
+            const formInputs = document.querySelectorAll('.form-control, .form-select');
+            formInputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateField(this);
+                });
+                
+                input.addEventListener('input', function() {
+                    if (this.classList.contains('is-invalid')) {
+                        validateField(this);
+                    }
+                });
+            });
+            
+            function validateField(field) {
+                const value = field.value.trim();
+                const isRequired = field.hasAttribute('required');
+                
+                // Remove existing validation classes
+                field.classList.remove('is-valid', 'is-invalid');
+                
+                if (isRequired && !value) {
+                    field.classList.add('is-invalid');
+                    return false;
+                }
+                
+                // Specific validations
+                if (field.name === 'otp' && value.length !== 6) {
+                    field.classList.add('is-invalid');
+                    return false;
+                }
+                
+                if (field.name === 'package') {
+                    const packageValue = parseFloat(value);
+                    if (isNaN(packageValue) || packageValue < 0) {
+                        field.classList.add('is-invalid');
+                        return false;
+                    }
+                }
+                
+                if (field.name === 'email' && value) {
+                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailPattern.test(value)) {
+                        field.classList.add('is-invalid');
+                        return false;
+                    }
+                }
+                
+                if (value) {
+                    field.classList.add('is-valid');
+                }
+                
+                return true;
+            }
+        });
+    </script>
+</body>
+</html>
