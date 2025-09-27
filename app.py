@@ -18,7 +18,7 @@ from email.message import EmailMessage
 
 app = Flask(__name__)
 import os
-app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-here')  # Use environment variable in production
+app.secret_key = os.environ.get('SECRET_KEY', 'xmFKeIrNN2O6lEXXlPNizfAtpqLsCd0ytRAqhK0Kx94')  # Use environment variable in production
 
 # Token serializer for secure links
 serializer = URLSafeTimedSerializer(app.secret_key)
