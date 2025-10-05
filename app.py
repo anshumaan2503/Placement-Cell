@@ -791,8 +791,13 @@ if __name__ == '__main__':
     print("[INFO] Starting Placement Cell Application...")
     print("[INFO] MongoDB Database: studetsdb")
     print("[INFO] Collection: Placed")
-    print("[INFO] Server will start at: http://localhost:5000")
-    # Production-ready configuration
-    port = int(os.environ.get('PORT', 5000))
-    debug = os.environ.get('FLASK_ENV') == 'development'
-    app.run(host='0.0.0.0', port=port, debug=debug)
+    
+    # Check if running on Vercel
+    if os.environ.get('VERCEL'):
+        print("[INFO] Running on Vercel")
+    else:
+        print("[INFO] Server will start at: http://localhost:5000")
+        # Production-ready configuration
+        port = int(os.environ.get('PORT', 5000))
+        debug = os.environ.get('FLASK_ENV') == 'development'
+        app.run(host='0.0.0.0', port=port, debug=debug)
