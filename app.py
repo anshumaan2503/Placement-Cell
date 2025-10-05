@@ -77,6 +77,9 @@ def generate_otp():
 
 def send_email(to_email, subject, body):
     """Send email with OTP and registration link"""
+    print(f"📨 SEND_EMAIL FUNCTION CALLED")
+    print(f"📨 To: {to_email}")
+    print(f"📨 Subject: {subject}")
     try:
         # Check if email configuration is set up (force real email sending)
         if False:  # Temporarily disabled - always send real emails
@@ -606,9 +609,17 @@ def generate_student_link():
             </html>
             """
             
+            print(f"\n{'='*50}")
+            print(f"🚀 STARTING EMAIL PROCESS")
             print(f"🔄 Attempting to send email to: {contact_value}")
             print(f"📧 OTP: {otp}")
             print(f"🔗 Registration link: {registration_link}")
+            print(f"📧 Email config check:")
+            print(f"   - SMTP Server: {EMAIL_CONFIG['smtp_server']}")
+            print(f"   - SMTP Port: {EMAIL_CONFIG['smtp_port']}")
+            print(f"   - From Email: {EMAIL_CONFIG['email']}")
+            print(f"   - Password Set: {'Yes' if EMAIL_CONFIG['password'] else 'No'}")
+            print(f"{'='*50}")
             
             email_result = send_email(contact_value, subject, body)
             print(f"📤 Email send result: {email_result}")
@@ -619,6 +630,8 @@ def generate_student_link():
             else:
                 flash('Failed to send email. Please check email configuration.', 'error')
                 print(f"❌ FAILED: Email not sent to {contact_value}")
+            
+            print(f"🏁 EMAIL PROCESS COMPLETE\n")
             
             return redirect(url_for('admin_dashboard'))
             
