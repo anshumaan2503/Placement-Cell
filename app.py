@@ -78,8 +78,8 @@ def generate_otp():
 def send_email(to_email, subject, body):
     """Send email with OTP and registration link"""
     try:
-        # Check if email configuration is set up
-        if EMAIL_CONFIG['email'] == 'your-email@gmail.com' or EMAIL_CONFIG['password'] == 'your-app-password' or True:
+        # Check if email configuration is set up (force real email sending)
+        if False:  # Temporarily disabled - always send real emails
             # Email not configured, print to console instead
             print(f"\n{'='*60}")
             print(f"⚠️  EMAIL NOT CONFIGURED - SHOWING OTP IN CONSOLE")
@@ -121,6 +121,10 @@ def send_email(to_email, subject, body):
         
     except Exception as e:
         print(f"❌ Email sending failed: {e}")
+        print(f"📧 Email config - Server: {EMAIL_CONFIG['smtp_server']}, Port: {EMAIL_CONFIG['smtp_port']}")
+        print(f"📧 Email config - From: {EMAIL_CONFIG['email']}")
+        print(f"📧 Email config - Password set: {'Yes' if EMAIL_CONFIG['password'] else 'No'}")
+        
         print(f"\n{'='*60}")
         print(f"📧 EMAIL FALLBACK - SHOWING OTP IN CONSOLE")
         print(f"{'='*60}")
@@ -602,10 +606,19 @@ def generate_student_link():
             </html>
             """
             
-            if send_email(contact_value, subject, body):
+            print(f"🔄 Attempting to send email to: {contact_value}")
+            print(f"📧 OTP: {otp}")
+            print(f"🔗 Registration link: {registration_link}")
+            
+            email_result = send_email(contact_value, subject, body)
+            print(f"📤 Email send result: {email_result}")
+            
+            if email_result:
                 flash(f'Registration link and OTP sent successfully to {contact_value}!', 'success')
+                print(f"✅ SUCCESS: Email sent to {contact_value}")
             else:
                 flash('Failed to send email. Please check email configuration.', 'error')
+                print(f"❌ FAILED: Email not sent to {contact_value}")
             
             return redirect(url_for('admin_dashboard'))
             
