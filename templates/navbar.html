@@ -69,24 +69,72 @@
     transform: translateX(4px);
   }
 
+  /* Mobile Navigation Styles */
   @media (max-width: 768px) {
-    .dropdown-menu {
-      position: static;
-      box-shadow: none;
-      margin-top: 0;
-      border-radius: 0;
-      border: none;
+    .nav-menu {
+      position: fixed;
+      top: 70px;
+      right: -100%;
+      width: 100%;
+      height: calc(100vh - 70px);
+      background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding-top: 2rem;
+      transition: right 0.3s ease-in-out;
+      z-index: 1000;
+    }
+    
+    .nav-menu.active {
+      right: 0;
+    }
+    
+    .nav-link {
+      color: white !important;
+      font-size: 1.2rem;
+      padding: 1rem 2rem;
+      width: 90%;
+      text-align: center;
+      border-radius: 8px;
+      margin: 0.5rem 0;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
     }
-
-    .dropdown-item {
-      color: var(--white);
-    }
-
-    .dropdown-item:hover {
+    
+    .nav-link:hover {
       background: rgba(255, 214, 0, 0.2);
-      color: var(--white);
+      transform: translateX(0);
+    }
+    
+    .menu-toggle {
+      display: block;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    
+    .menu-toggle:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .menu-toggle {
+      display: none;
+    }
+    
+    .nav-menu {
+      position: static;
+      flex-direction: row;
+      background: none;
+      height: auto;
+      width: auto;
     }
   }
 </style>
@@ -112,14 +160,38 @@
       link.classList.add('animate-fade-in');
     });
 
-    // Add hover effects to menu toggle
+    // Mobile menu toggle functionality
     const menuToggle = document.getElementById('menu-toggle');
-    if (menuToggle) {
+    const navMenu = document.getElementById('nav-menu');
+    
+    if (menuToggle && navMenu) {
+      menuToggle.addEventListener('click', function () {
+        navMenu.classList.toggle('active');
+        
+        // Change hamburger to X when open
+        const icon = this.querySelector('i');
+        if (navMenu.classList.contains('active')) {
+          icon.className = 'bi bi-x';
+        } else {
+          icon.className = 'bi bi-list';
+        }
+      });
+      
+      // Add hover effects to menu toggle
       menuToggle.addEventListener('mouseenter', function () {
         this.style.animation = 'pulse 0.6s ease-in-out';
       });
       menuToggle.addEventListener('mouseleave', function () {
         this.style.animation = '';
+      });
+      
+      // Close menu when clicking on nav links (mobile)
+      const navLinks = navMenu.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          navMenu.classList.remove('active');
+          menuToggle.querySelector('i').className = 'bi bi-list';
+        });
       });
     }
 
