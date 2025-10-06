@@ -334,11 +334,13 @@ body {
     height: auto;
     min-height: 250px;
     max-height: 450px;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
     display: block;
     box-shadow: var(--shadow-medium);
     transition: var(--transition);
     filter: brightness(1.05) contrast(1.1);
+    background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
 }
 
 .hero-image:hover img {
@@ -540,7 +542,9 @@ body {
     
     .hero-image img {
         min-height: 200px;
-        object-position: center; /* Center the image */
+        max-height: 300px;
+        object-fit: contain;
+        object-position: center;
     }
     
     .content-section {
