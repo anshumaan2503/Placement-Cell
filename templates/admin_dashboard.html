@@ -388,6 +388,13 @@
                             <td><span class="year-badge">{{ student.batch }}</span></td>
                             <td>{{ student.placement_date }}</td>
                             <td>
+                                {% if student.documents %}
+                                <a href="{{ url_for('admin_view_documents', student_id=student._id) }}" 
+                                   class="btn btn-sm btn-info me-1" 
+                                   style="background: linear-gradient(135deg, #17a2b8, #20c997); border: none; border-radius: 20px; font-size: 0.8rem;">
+                                    <i class="bi bi-file-earmark-text"></i> Docs
+                                </a>
+                                {% endif %}
                                 <button class="delete-btn" onclick="confirmDelete('{{ student._id }}', '{{ student.name }}')">
                                     <i class="bi bi-trash"></i> Delete
                                 </button>
