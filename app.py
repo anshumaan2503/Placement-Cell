@@ -733,8 +733,8 @@ def generate_student_link():
             print(f"📧 Email config check:")
             print(f"   - SMTP Server: {EMAIL_CONFIG['smtp_server']}")
             print(f"   - SMTP Port: {EMAIL_CONFIG['smtp_port']}")
-            print(f"   - From Email: {EMAIL_CONFIG['email']}")
-            print(f"   - Password Set: {'Yes' if EMAIL_CONFIG['password'] else 'No'}")
+            print(f"   - From Email: {EMAIL_CONFIG['sender_email']}")
+            print(f"   - Brevo API Key Set: {'Yes' if EMAIL_CONFIG['brevo_api_key'] else 'No'}")
             print(f"{'='*50}")
             
             email_result = send_email(contact_value, subject, body)
@@ -926,12 +926,12 @@ def admin_email_config():
         return redirect(url_for('admin_login'))
     
     # Check current email configuration status
-    email_configured = (EMAIL_CONFIG['email'] != 'your-email@gmail.com' and 
-                       EMAIL_CONFIG['password'] != 'your-app-password')
+    email_configured = (EMAIL_CONFIG['brevo_api_key'] != '' and 
+                       EMAIL_CONFIG['sender_email'] != '')
     
     return render_template('admin_email_config.html', 
                          email_configured=email_configured,
-                         current_email=EMAIL_CONFIG['email'])
+                         current_email=EMAIL_CONFIG['sender_email'])
 
 @app.route('/admin-view-tokens')
 def admin_view_tokens():
