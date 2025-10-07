@@ -13,7 +13,7 @@ MONGODB_URI=mongodb+srv://testuser:testpass123@placement-cluster.twfnkpl.mongodb
 
 # Email Service - Brevo
 EMAIL_PROVIDER=brevo
-BREVO_API_KEY=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
+BREVO_API_KEY=your_brevo_api_key_here
 SENDER_EMAIL=attechno8@gmail.com
 SENDER_NAME=IGNTU Computer Science Placement Cell
 
@@ -37,7 +37,7 @@ PORT=5000
 3. **Settings** → **Environment Variables**
 4. **Add each variable**:
    - Name: `EMAIL_PROVIDER`, Value: `brevo`
-   - Name: `BREVO_API_KEY`, Value: `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`
+   - Name: `BREVO_API_KEY`, Value: `your_brevo_api_key_here`
    - Name: `SENDER_EMAIL`, Value: `attechno8@gmail.com`
    - Name: `SENDER_NAME`, Value: `IGNTU Computer Science Placement Cell`
    - (Add all other variables from the list above)
