@@ -1,5 +1,7 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file, make_response
+from werkzeug.utils import secure_filename
+import base64
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from datetime import datetime, timedelta
@@ -151,6 +153,52 @@ def is_valid_email(email):
     """Validate email format"""
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(pattern, email) is not None
+
+def validate_file_upload(file, max_size_kb=500):
+    """Validate uploaded file size and type"""
+    if not file or not file.filename:
+        return False, "No file selected"
+    
+    # Check file size (convert KB to bytes)
+    max_size_bytes = max_size_kb * 1024
+    file.seek(0, 2)  # Seek to end of file
+    file_size = file.tell()
+    file.seek(0)  # Reset file pointer
+    
+    if file_size > max_size_bytes:
+        return False, f"File size ({file_size/1024:.1f}KB) exceeds maximum allowed size ({max_size_kb}KB)"
+    
+    # Check file extension
+    allowed_extensions = {
+        'jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'
+    }
+    
+    filename = secure_filename(file.filename.lower())
+    if '.' not in filename:
+        return False, "File must have an extension"
+    
+    file_extension = filename.rsplit('.', 1)[1]
+    if file_extension not in allowed_extensions:
+        return False, f"File type '{file_extension}' not allowed. Allowed types: {', '.join(allowed_extensions)}"
+    
+    return True, "File is valid"
+
+def save_file_to_db(file, file_type):
+    """Save file to database as binary data"""
+    if not file:
+        return None
+    
+    file.seek(0)  # Reset file pointer
+    file_data = file.read()
+    
+    return {
+        'filename': secure_filename(file.filename),
+        'content_type': file.content_type,
+        'size': len(file_data),
+        'data': base64.b64encode(file_data).decode('utf-8'),
+        'upload_date': datetime.now(),
+        'file_type': file_type
+    }
 
 
 
@@ -696,8 +744,41 @@ def student_self_register(token):
         email = request.form.get('email', '').strip()
         phone = request.form.get('phone', '').strip()
         
+        # Get uploaded files
+        photo_file = request.files.get('student_photo')
+        offer_file = request.files.get('offer_letter')
+        
         if not all([roll_number, company, package, year, branch]):
             flash('All required fields must be filled!', 'error')
+            return render_template('student_self_register.html', 
+                                 student_name=token_doc['student_name'],
+                                 token=token)
+        
+        # Validate file uploads
+        if not photo_file or not photo_file.filename:
+            flash('Please upload your photo!', 'error')
+            return render_template('student_self_register.html', 
+                                 student_name=token_doc['student_name'],
+                                 token=token)
+        
+        if not offer_file or not offer_file.filename:
+            flash('Please upload your offer letter!', 'error')
+            return render_template('student_self_register.html', 
+                                 student_name=token_doc['student_name'],
+                                 token=token)
+        
+        # Validate photo file
+        photo_valid, photo_msg = validate_file_upload(photo_file, 500)
+        if not photo_valid:
+            flash(f'Photo upload error: {photo_msg}', 'error')
+            return render_template('student_self_register.html', 
+                                 student_name=token_doc['student_name'],
+                                 token=token)
+        
+        # Validate offer letter file
+        offer_valid, offer_msg = validate_file_upload(offer_file, 500)
+        if not offer_valid:
+            flash(f'Offer letter upload error: {offer_msg}', 'error')
             return render_template('student_self_register.html', 
                                  student_name=token_doc['student_name'],
                                  token=token)
@@ -727,6 +808,10 @@ def student_self_register(token):
             passing_year = request.form.get('passing_year')
             position = request.form.get('position')
             
+            # Process uploaded files
+            photo_data = save_file_to_db(photo_file, 'photo')
+            offer_data = save_file_to_db(offer_file, 'offer_letter')
+            
             # Create student record
             student_data = {
                 'student_id': roll_number,
@@ -744,7 +829,11 @@ def student_self_register(token):
                 'email': email or f"{token_doc['student_name'].lower().replace(' ', '.')}@example.com",
                 'phone': phone or '+91-9876543210',
                 'self_registered': True,
-                'registration_date': datetime.now()
+                'registration_date': datetime.now(),
+                'documents': {
+                    'photo': photo_data,
+                    'offer_letter': offer_data
+                }
             }
             
             # Insert student data
@@ -811,6 +900,111 @@ def admin_view_tokens():
     except Exception as e:
         flash(f'Error fetching tokens: {str(e)}', 'error')
         return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin-view-documents/<student_id>')
+def admin_view_documents(student_id):
+    """Admin route to view student documents"""
+    if not is_admin_logged_in():
+        flash('Please login as admin first!', 'error')
+        return redirect(url_for('admin_login'))
+    
+    try:
+        # Find student by ObjectId
+        student = placed_students_collection.find_one({'_id': ObjectId(student_id)})
+        if not student:
+            flash('Student not found!', 'error')
+            return redirect(url_for('admin_dashboard'))
+        
+        # Check if student has documents
+        documents = student.get('documents', {})
+        if not documents:
+            flash('No documents found for this student!', 'error')
+            return redirect(url_for('admin_dashboard'))
+        
+        return render_template('admin_view_documents.html', 
+                             student=student, 
+                             documents=documents)
+    
+    except Exception as e:
+        flash(f'Error retrieving documents: {str(e)}', 'error')
+        return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin-download-document/<student_id>/<doc_type>')
+def admin_download_document(student_id, doc_type):
+    """Admin route to download student documents"""
+    if not is_admin_logged_in():
+        flash('Please login as admin first!', 'error')
+        return redirect(url_for('admin_login'))
+    
+    try:
+        # Find student by ObjectId
+        student = placed_students_collection.find_one({'_id': ObjectId(student_id)})
+        if not student:
+            flash('Student not found!', 'error')
+            return redirect(url_for('admin_dashboard'))
+        
+        # Get document data
+        documents = student.get('documents', {})
+        if doc_type not in documents:
+            flash('Document not found!', 'error')
+            return redirect(url_for('admin_dashboard'))
+        
+        doc_data = documents[doc_type]
+        
+        # Decode base64 data
+        file_data = base64.b64decode(doc_data['data'])
+        
+        # Create response
+        response = make_response(file_data)
+        response.headers['Content-Type'] = doc_data['content_type']
+        response.headers['Content-Disposition'] = f'attachment; filename="{student["name"]}_{doc_type}_{doc_data["filename"]}"'
+        
+        return response
+    
+    except Exception as e:
+        flash(f'Error downloading document: {str(e)}', 'error')
+        return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin-preview-document/<student_id>/<doc_type>')
+def admin_preview_document(student_id, doc_type):
+    """Admin route to preview student documents in browser"""
+    if not is_admin_logged_in():
+        return "Unauthorized", 401
+    
+    try:
+        # Find student by ObjectId
+        student = placed_students_collection.find_one({'_id': ObjectId(student_id)})
+        if not student:
+            return "Student not found", 404
+        
+        # Get document data
+        documents = student.get('documents', {})
+        if doc_type not in documents:
+            return "Document not found", 404
+        
+        doc_data = documents[doc_type]
+        
+        # Decode base64 data
+        file_data = base64.b64decode(doc_data['data'])
+        
+        # Create response for inline viewing
+        response = make_response(file_data)
+        response.headers['Content-Type'] = doc_data['content_type']
+        
+        # Set inline disposition for preview (not download)
+        if doc_data['content_type'].startswith('image/') or doc_data['content_type'] == 'application/pdf':
+            response.headers['Content-Disposition'] = f'inline; filename="{doc_data["filename"]}"'
+        else:
+            # For other file types, still allow download
+            response.headers['Content-Disposition'] = f'attachment; filename="{doc_data["filename"]}"'
+        
+        # Add cache control headers for better performance
+        response.headers['Cache-Control'] = 'private, max-age=300'  # Cache for 5 minutes
+        
+        return response
+    
+    except Exception as e:
+        return f"Error previewing document: {str(e)}", 500
 
 
 
