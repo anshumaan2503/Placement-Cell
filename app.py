@@ -222,12 +222,24 @@ def add_student():
                 flash('Roll number already exists!', 'error')
                 return render_template('add_student.html')
 
+            # Get all the new fields from the form
+            category = request.form.get('category')
+            gender = request.form.get('gender')
+            admission_year = request.form.get('admission_year')
+            passing_year = request.form.get('passing_year')
+            position = request.form.get('position')
+            
             student_data = {
                 'student_id': roll_number,
                 'name': name,
-                'course': branch,          # MCA/BCA
-                'batch': year,             # Year
+                'category': category,      # Gen/EWS/OBC/SC/ST
+                'gender': gender,          # Male/Female/Other
+                'course': branch,          # MCA/BCA/PhD
+                'admission_year': admission_year,  # Year of admission
+                'passing_year': passing_year,      # Year of passing
+                'batch': year,             # Placement year
                 'company': company,
+                'position': position,      # Job position/role
                 'package_lpa': package,    # LPA
                 'placement_date': datetime.now().strftime('%Y-%m-%d'),
                 'email': f"{name.lower().replace(' ', '.')}@example.com",
@@ -708,14 +720,26 @@ def student_self_register(token):
                                  token=token)
         
         try:
+            # Get all the new fields from the form
+            category = request.form.get('category')
+            gender = request.form.get('gender')
+            admission_year = request.form.get('admission_year')
+            passing_year = request.form.get('passing_year')
+            position = request.form.get('position')
+            
             # Create student record
             student_data = {
                 'student_id': roll_number,
                 'name': token_doc['student_name'],
-                'course': branch,
-                'batch': year,
+                'category': category,      # Gen/EWS/OBC/SC/ST
+                'gender': gender,          # Male/Female/Other
+                'course': branch,          # MCA/BCA/PhD
+                'admission_year': admission_year,  # Year of admission
+                'passing_year': passing_year,      # Year of passing
+                'batch': year,             # Placement year
                 'company': company,
-                'package_lpa': package,
+                'position': position,      # Job position/role
+                'package_lpa': package,    # LPA
                 'placement_date': datetime.now().strftime('%Y-%m-%d'),
                 'email': email or f"{token_doc['student_name'].lower().replace(' ', '.')}@example.com",
                 'phone': phone or '+91-9876543210',
