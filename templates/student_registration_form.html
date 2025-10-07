@@ -97,11 +97,82 @@
                                    placeholder="Enter your roll number">
                         </div>
                         <div class="col-md-6 mb-3">
+                            <label class="form-label">Category *</label>
+                            <select class="form-control" name="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Gen">Gen (General)</option>
+                                <option value="EWS">EWS (Economically Weaker Section)</option>
+                                <option value="OBC">OBC (Other Backward Class)</option>
+                                <option value="SC">SC (Scheduled Caste)</option>
+                                <option value="ST">ST (Scheduled Tribe)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Gender *</label>
+                            <select class="form-control" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Branch *</label>
                             <select class="form-control" name="branch" required>
                                 <option value="">Select Branch</option>
-                                <option value="MCA">MCA</option>
-                                <option value="BCA">BCA</option>
+                                <option value="MCA">MCA (Master of Computer Applications)</option>
+                                <option value="BCA">BCA (Bachelor of Computer Applications)</option>
+                                <option value="PhD">PhD (Doctor of Philosophy)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Year of Admission *</label>
+                            <select class="form-control" name="admission_year" required>
+                                <option value="">Select Admission Year</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                                <option value="2019">2019</option>
+                                <option value="2018">2018</option>
+                                <option value="2017">2017</option>
+                                <option value="2016">2016</option>
+                                <option value="2015">2015</option>
+                                <option value="2014">2014</option>
+                                <option value="2013">2013</option>
+                                <option value="2012">2012</option>
+                                <option value="2011">2011</option>
+                                <option value="2010">2010</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Year of Passing *</label>
+                            <select class="form-control" name="passing_year" required>
+                                <option value="">Select Passing Year</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                                <option value="2019">2019</option>
+                                <option value="2018">2018</option>
+                                <option value="2017">2017</option>
+                                <option value="2016">2016</option>
+                                <option value="2015">2015</option>
+                                <option value="2014">2014</option>
+                                <option value="2013">2013</option>
+                                <option value="2012">2012</option>
+                                <option value="2011">2011</option>
+                                <option value="2010">2010</option>
                             </select>
                         </div>
                     </div>
@@ -115,6 +186,18 @@
                                 <option value="2024">2024</option>
                                 <option value="2023">2023</option>
                                 <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                                <option value="2019">2019</option>
+                                <option value="2018">2018</option>
+                                <option value="2017">2017</option>
+                                <option value="2016">2016</option>
+                                <option value="2015">2015</option>
+                                <option value="2014">2014</option>
+                                <option value="2013">2013</option>
+                                <option value="2012">2012</option>
+                                <option value="2011">2011</option>
+                                <option value="2010">2010</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -125,6 +208,11 @@
                     </div>
                     
                     <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Position *</label>
+                            <input type="text" class="form-control" name="position" required 
+                                   placeholder="Enter job position/role">
+                        </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Package (LPA) *</label>
                             <input type="number" class="form-control" name="package" required 
