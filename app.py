@@ -113,8 +113,9 @@ def send_email(to_email, subject, body):
         # Create secure SSL context
         context = ssl.create_default_context()
         
-        # Send email
-        with smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port']) as server:
+        # Send email with timeout optimization
+        with smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'], timeout=20) as server:
+            server.sock.settimeout(20)  # Faster timeout
             server.starttls(context=context)
             server.login(EMAIL_CONFIG['email'], EMAIL_CONFIG['password'])
             server.send_message(msg)
@@ -406,6 +407,7 @@ def export_excel():
         # Calculate statistics
         packages = [s.get('package_lpa', 0) for s in students]
         companies = list(set([s.get('company', '') for s in students]))
+        phd_count = len([s for s in students if s.get('course', '') == 'PhD'])
         mca_count = len([s for s in students if s.get('course', '') == 'MCA'])
         bca_count = len([s for s in students if s.get('course', '') == 'BCA'])
         
@@ -420,6 +422,7 @@ def export_excel():
             ['Highest Package (LPA)', max_package],
             ['Lowest Package (LPA)', min_package],
             ['Total Companies', len(companies)],
+            ['PhD Students', phd_count],
             ['MCA Students', mca_count],
             ['BCA Students', bca_count]
         ]
