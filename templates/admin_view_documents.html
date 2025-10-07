@@ -188,6 +188,26 @@
                             <p><strong>Package:</strong> {{ student.package_lpa }} LPA</p>
                         </div>
                     </div>
+                    {% if student.specialization or student.about %}
+                    <div class="row mt-3">
+                        {% if student.specialization %}
+                        <div class="col-md-6">
+                            <p><strong>Specialization:</strong> {{ student.specialization }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% if student.about %}
+                    <div class="row">
+                        <div class="col-12">
+                            <p><strong>About:</strong></p>
+                            <div class="alert alert-light">
+                                {{ student.about }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    </div>
                 </div>
 
                 <div class="row">

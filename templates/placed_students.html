@@ -190,6 +190,15 @@
             font-size: 0.75rem;
         }
         
+        .specialization-badge {
+            background: linear-gradient(135deg, #e67e22, #f39c12);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
         .no-students {
             text-align: center;
             padding: 3rem;
@@ -289,6 +298,7 @@
                             <th>Passing Year</th>
                             <th>Company</th>
                             <th>Position</th>
+                            <th>Specialization</th>
                             <th>Package (LPA)</th>
                             <th>Placement Year</th>
                         </tr>
@@ -321,6 +331,13 @@
                                     <span class="position-badge">{{ student.position }}</span>
                                 {% else %}
                                     N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if student.specialization %}
+                                    <span class="specialization-badge">{{ student.specialization }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
                             <td><span class="package-badge">{{ "%.1f"|format(student.package_lpa) }} LPA</span></td>

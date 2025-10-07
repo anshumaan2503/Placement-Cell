@@ -17,6 +17,8 @@ import re
 import smtplib
 import ssl
 from email.message import EmailMessage
+import requests
+import json
 
 app = Flask(__name__)
 import os
@@ -27,11 +29,16 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 
 # Email configuration - Uses environment variables in production
 EMAIL_CONFIG = {
-    'smtp_server': os.environ.get('SMTP_SERVER', 'smtp.gmail.com'),
+    'provider': os.environ.get('EMAIL_PROVIDER', 'brevo'),  # 'brevo' or 'smtp'
+    'brevo_api_key': os.environ.get('BREVO_API_KEY', ''),
+    'brevo_api_url': 'https://api.brevo.com/v3/smtp/email',
+    'sender_email': os.environ.get('SENDER_EMAIL', 'placement@igntu.ac.in'),
+    'sender_name': os.environ.get('SENDER_NAME', 'IGNTU Computer Science Placement Cell'),
+    # Fallback SMTP configuration
+    'smtp_server': os.environ.get('SMTP_SERVER', 'smtp-relay.brevo.com'),
     'smtp_port': int(os.environ.get('SMTP_PORT', '587')),
-    'email': os.environ.get('EMAIL_ADDRESS', 'attechno8@gmail.com'),
-    'password': os.environ.get('EMAIL_PASSWORD', 'cdur zofb gwua wfur'),
-    'sender_name': os.environ.get('SENDER_NAME', 'IGNTU Computer Science Placement Cell')
+    'smtp_username': os.environ.get('SMTP_USERNAME', ''),
+    'smtp_password': os.environ.get('SMTP_PASSWORD', '')
 }
 
 # 📧 EXAMPLE (replace with your actual details):
@@ -77,75 +84,113 @@ def generate_otp():
     """Generate a 6-digit OTP"""
     return str(secrets.randbelow(900000) + 100000)
 
-def send_email(to_email, subject, body):
-    """Send email with OTP and registration link"""
-    print(f"📨 SEND_EMAIL FUNCTION CALLED")
-    print(f"📨 To: {to_email}")
-    print(f"📨 Subject: {subject}")
+def send_email_via_brevo_api(to_email, subject, html_content):
+    """Send email using Brevo API"""
     try:
-        # Check if email configuration is set up (force real email sending)
-        if False:  # Temporarily disabled - always send real emails
-            # Email not configured, print to console instead
-            print(f"\n{'='*60}")
-            print(f"⚠️  EMAIL NOT CONFIGURED - SHOWING OTP IN CONSOLE")
-            print(f"{'='*60}")
-            print(f"TO: {to_email}")
-            print(f"SUBJECT: {subject}")
-            print(f"{'='*60}")
-            
-            # Extract OTP from body for easy viewing
-            import re
-            otp_match = re.search(r'<div[^>]*>(\d{6})</div>', body)
-            if otp_match:
-                otp = otp_match.group(1)
-                print(f"🔑 OTP CODE: {otp}")
-                print(f"{'='*60}")
-                print(f"📧 Configure email in app.py to send real emails")
-                print(f"{'='*60}\n")
-            
-            return True
+        headers = {
+            'accept': 'application/json',
+            'api-key': EMAIL_CONFIG['brevo_api_key'],
+            'content-type': 'application/json'
+        }
         
+        payload = {
+            'sender': {
+                'name': EMAIL_CONFIG['sender_name'],
+                'email': EMAIL_CONFIG['sender_email']
+            },
+            'to': [
+                {
+                    'email': to_email,
+                    'name': to_email.split('@')[0]
+                }
+            ],
+            'subject': subject,
+            'htmlContent': html_content
+        }
+        
+        response = requests.post(EMAIL_CONFIG['brevo_api_url'], headers=headers, json=payload, timeout=30)
+        
+        if response.status_code == 201:
+            print(f"✅ Email sent successfully via Brevo API to {to_email}")
+            return True
+        else:
+            print(f"❌ Brevo API error: {response.status_code} - {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Brevo API sending failed: {e}")
+        return False
+
+def send_email_via_smtp(to_email, subject, html_content):
+    """Send email using SMTP (Brevo SMTP or other)"""
+    try:
         # Create email message
         msg = EmailMessage()
         msg['Subject'] = subject
-        msg['From'] = f"{EMAIL_CONFIG['sender_name']} <{EMAIL_CONFIG['email']}>"
+        msg['From'] = f"{EMAIL_CONFIG['sender_name']} <{EMAIL_CONFIG['sender_email']}>"
         msg['To'] = to_email
-        msg.set_content(body, subtype='html')
+        msg.set_content(html_content, subtype='html')
         
         # Create secure SSL context
         context = ssl.create_default_context()
         
         # Send email with timeout optimization
-        with smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'], timeout=20) as server:
-            server.sock.settimeout(20)  # Faster timeout
+        with smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'], timeout=30) as server:
+            server.sock.settimeout(30)
             server.starttls(context=context)
-            server.login(EMAIL_CONFIG['email'], EMAIL_CONFIG['password'])
+            server.login(EMAIL_CONFIG['smtp_username'], EMAIL_CONFIG['smtp_password'])
             server.send_message(msg)
         
-        print(f"✅ Email sent successfully to {to_email}")
+        print(f"✅ Email sent successfully via SMTP to {to_email}")
         return True
         
     except Exception as e:
-        print(f"❌ Email sending failed: {e}")
-        print(f"📧 Email config - Server: {EMAIL_CONFIG['smtp_server']}, Port: {EMAIL_CONFIG['smtp_port']}")
-        print(f"📧 Email config - From: {EMAIL_CONFIG['email']}")
-        print(f"📧 Email config - Password set: {'Yes' if EMAIL_CONFIG['password'] else 'No'}")
-        
-        print(f"\n{'='*60}")
-        print(f"📧 EMAIL FALLBACK - SHOWING OTP IN CONSOLE")
+        print(f"❌ SMTP sending failed: {e}")
+        return False
+
+def send_email(to_email, subject, body):
+    """Send email with OTP and registration link using Brevo or fallback methods"""
+    print(f"📨 SEND_EMAIL FUNCTION CALLED")
+    print(f"📨 To: {to_email}")
+    print(f"📨 Subject: {subject}")
+    print(f"📨 Provider: {EMAIL_CONFIG['provider']}")
+    
+    # Check if Brevo API key is configured
+    if EMAIL_CONFIG['provider'] == 'brevo' and EMAIL_CONFIG['brevo_api_key']:
+        print("🚀 Attempting to send via Brevo API...")
+        if send_email_via_brevo_api(to_email, subject, body):
+            return True
+        else:
+            print("⚠️ Brevo API failed, trying SMTP fallback...")
+    
+    # Try SMTP if Brevo API failed or if SMTP is preferred
+    if EMAIL_CONFIG['smtp_username'] and EMAIL_CONFIG['smtp_password']:
+        print("📧 Attempting to send via SMTP...")
+        if send_email_via_smtp(to_email, subject, body):
+            return True
+        else:
+            print("⚠️ SMTP also failed, showing console fallback...")
+    
+    # Console fallback for development/testing
+    print(f"\n{'='*60}")
+    print(f"📧 EMAIL FALLBACK - SHOWING OTP IN CONSOLE")
+    print(f"{'='*60}")
+    print(f"TO: {to_email}")
+    print(f"SUBJECT: {subject}")
+    print(f"{'='*60}")
+    
+    # Extract OTP from body for easy viewing
+    import re
+    otp_match = re.search(r'<div[^>]*>(\d{6})</div>', body)
+    if otp_match:
+        otp = otp_match.group(1)
+        print(f"🔑 OTP CODE: {otp}")
         print(f"{'='*60}")
-        print(f"TO: {to_email}")
-        print(f"SUBJECT: {subject}")
-        
-        # Extract OTP from body for easy viewing
-        import re
-        otp_match = re.search(r'<div[^>]*>(\d{6})</div>', body)
-        if otp_match:
-            otp = otp_match.group(1)
-            print(f"🔑 OTP CODE: {otp}")
-        
-        print(f"{'='*60}\n")
-        return True  # Return True so the process continues
+    
+    print(f"📧 Configure Brevo API key or SMTP credentials to send real emails")
+    print(f"{'='*60}\n")
+    
+    return True  # Return True so the process continues
 
 
 
@@ -276,6 +321,12 @@ def add_student():
             admission_year = request.form.get('admission_year')
             passing_year = request.form.get('passing_year')
             position = request.form.get('position')
+            specialization = request.form.get('specialization', '').strip()
+            about = request.form.get('about', '').strip()
+            
+            # Validate about section length (max 500 characters)
+            if about and len(about) > 500:
+                about = about[:500]
             
             student_data = {
                 'student_id': roll_number,
@@ -289,6 +340,8 @@ def add_student():
                 'company': company,
                 'position': position,      # Job position/role
                 'package_lpa': package,    # LPA
+                'specialization': specialization,  # Student's area of expertise
+                'about': about,                     # Student's self-description
                 'placement_date': datetime.now().strftime('%Y-%m-%d'),
                 'email': f"{name.lower().replace(' ', '.')}@example.com",
                 'phone': '+91-9876543210'
@@ -807,6 +860,12 @@ def student_self_register(token):
             admission_year = request.form.get('admission_year')
             passing_year = request.form.get('passing_year')
             position = request.form.get('position')
+            specialization = request.form.get('specialization', '').strip()
+            about = request.form.get('about', '').strip()
+            
+            # Validate about section length (max 500 characters)
+            if about and len(about) > 500:
+                about = about[:500]
             
             # Process uploaded files
             photo_data = save_file_to_db(photo_file, 'photo')
@@ -828,6 +887,8 @@ def student_self_register(token):
                 'placement_date': datetime.now().strftime('%Y-%m-%d'),
                 'email': email or f"{token_doc['student_name'].lower().replace(' ', '.')}@example.com",
                 'phone': phone or '+91-9876543210',
+                'specialization': specialization,  # Student's area of expertise
+                'about': about,                     # Student's self-description
                 'self_registered': True,
                 'registration_date': datetime.now(),
                 'documents': {
