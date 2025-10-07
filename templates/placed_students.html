@@ -119,21 +119,26 @@
         
         .table-responsive {
             border-radius: 0 0 10px 10px;
+            overflow-x: auto;
         }
         
         .table th {
             background-color: #f8f9fa;
             border: none;
-            padding: 1rem;
+            padding: 0.8rem 0.6rem;
             font-weight: 600;
             color: #283593;
+            white-space: nowrap;
+            font-size: 0.9rem;
         }
         
         .table td {
-            padding: 1rem;
+            padding: 0.8rem 0.6rem;
             border: none;
             border-bottom: 1px solid #e9ecef;
             vertical-align: middle;
+            white-space: nowrap;
+            font-size: 0.9rem;
         }
         
         .table tbody tr:hover {
@@ -155,7 +160,34 @@
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+        }
+        
+        .category-badge {
+            background: linear-gradient(135deg, #ff9800, #ffb74d);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .gender-badge {
+            background: linear-gradient(135deg, #9c27b0, #ba68c8);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .position-badge {
+            background: linear-gradient(135deg, #2196f3, #64b5f6);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.75rem;
         }
         
         .no-students {
@@ -250,23 +282,51 @@
                         <tr>
                             <th>Name</th>
                             <th>Roll Number</th>
-                            <th>Branch</th>
+                            <th>Category</th>
+                            <th>Gender</th>
+                            <th>Course</th>
+                            <th>Admission Year</th>
+                            <th>Passing Year</th>
                             <th>Company</th>
+                            <th>Position</th>
                             <th>Package (LPA)</th>
-                            <th>Year</th>
+                            <th>Placement Year</th>
                         </tr>
                     </thead>
                     <tbody>
-                                                 {% for student in students %}
-                         <tr>
-                             <td><strong>{{ student.name }}</strong></td>
-                             <td>{{ student.student_id }}</td>
-                             <td>{{ student.course }}</td>
-                             <td>{{ student.company }}</td>
-                             <td><span class="package-badge">{{ "%.1f"|format(student.package_lpa) }} LPA</span></td>
-                             <td><span class="year-badge">{{ student.batch }}</span></td>
-                         </tr>
-                         {% endfor %}
+                        {% for student in students %}
+                        <tr>
+                            <td><strong>{{ student.name }}</strong></td>
+                            <td>{{ student.student_id }}</td>
+                            <td>
+                                {% if student.category %}
+                                    <span class="category-badge">{{ student.category }}</span>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if student.gender %}
+                                    <span class="gender-badge">{{ student.gender }}</span>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td><strong>{{ student.course }}</strong></td>
+                            <td>{{ student.admission_year or 'N/A' }}</td>
+                            <td>{{ student.passing_year or 'N/A' }}</td>
+                            <td><strong>{{ student.company }}</strong></td>
+                            <td>
+                                {% if student.position %}
+                                    <span class="position-badge">{{ student.position }}</span>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td><span class="package-badge">{{ "%.1f"|format(student.package_lpa) }} LPA</span></td>
+                            <td><span class="year-badge">{{ student.batch }}</span></td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
