@@ -1,5 +1,7 @@
 # Environment Variables (contains secrets)
 .env
+*.txt
+*API*key*
 
 # Python
 __pycache__/
