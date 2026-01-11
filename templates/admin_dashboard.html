@@ -340,6 +340,13 @@
                 <i class="bi bi-file-earmark-excel"></i>
                 Export Excel
             </a>
+            <form action="{{ url_for('import_csv') }}" method="POST" enctype="multipart/form-data" style="display:inline-block;">
+                <label class="btn-admin" style="cursor:pointer;">
+                    <i class="bi bi-upload"></i>
+                    Import CSV
+                    <input type="file" name="csv_file" accept="text/csv" style="display:none" required onchange="this.form.submit()">
+                </label>
+            </form>
             <a href="{{ url_for('admin_logout') }}" class="btn-admin btn-danger-admin">
                 <i class="bi bi-box-arrow-right"></i>
                 Logout

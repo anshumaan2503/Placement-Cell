@@ -284,6 +284,111 @@ def admin_dashboard():
         flash(f'Database error: {str(e)}', 'error')
         return render_template('admin_dashboard.html', students=[])
 
+
+@app.route('/import-csv', methods=['POST'])
+def import_csv():
+    if not is_admin_logged_in():
+        flash('Please login as admin first!', 'error')
+        return redirect(url_for('admin_login'))
+
+    csv_file = request.files.get('csv_file')
+    if not csv_file or csv_file.filename == '':
+        flash('No CSV file selected!', 'error')
+        return redirect(url_for('admin_dashboard'))
+
+    try:
+        content = csv_file.read().decode('utf-8-sig')
+        stream = io.StringIO(content)
+        reader = csv.DictReader(stream)
+    except Exception as e:
+        flash(f'Error reading CSV file: {str(e)}', 'error')
+        return redirect(url_for('admin_dashboard'))
+
+    inserted = 0
+    skipped = 0
+    errors = 0
+    error_msgs = []
+
+    # Helper to get first matching column
+    def get_field(row, candidates):
+        for c in candidates:
+            if c in row and row[c] is not None:
+                val = row[c].strip()
+                if val != '':
+                    return val
+        return ''
+
+    for idx, row in enumerate(reader, start=1):
+        try:
+            name = get_field(row, ['Name', 'name'])
+            student_id = get_field(row, ['Roll Number', 'Roll', 'student_id', 'student id'])
+            course = get_field(row, ['Branch', 'branch', 'Course', 'course'])
+            batch = get_field(row, ['Batch Year', 'Batch', 'batch', 'year'])
+            company = get_field(row, ['Company', 'company'])
+            package_raw = get_field(row, ['Package (LPA)', 'Package', 'package_lpa', 'package'])
+            placement_date = get_field(row, ['Placement Date', 'placement_date'])
+            email = get_field(row, ['Email', 'email'])
+            phone = get_field(row, ['Phone', 'phone'])
+            category = get_field(row, ['Category', 'category'])
+            gender = get_field(row, ['Gender', 'gender'])
+            admission_year = get_field(row, ['Year of Admission', 'Admission Year', 'admission_year'])
+            passing_year = get_field(row, ['Year of Passing', 'Passing Year', 'passing_year'])
+            position = get_field(row, ['Position', 'position'])
+            specialization = get_field(row, ['Specialization', 'specialization'])
+            about = get_field(row, ['About', 'about'])
+
+            if not student_id or not name:
+                skipped += 1
+                continue
+
+            existing = placed_students_collection.find_one({'student_id': student_id})
+            if existing:
+                skipped += 1
+                continue
+
+            try:
+                package_lpa = float(package_raw) if package_raw else 0.0
+            except ValueError:
+                package_lpa = 0.0
+
+            # batch might be numeric or string
+            try:
+                batch_val = int(batch) if batch else ''
+            except ValueError:
+                batch_val = batch
+
+            student_data = {
+                'student_id': student_id,
+                'name': name,
+                'category': category,
+                'gender': gender,
+                'course': course,
+                'admission_year': admission_year,
+                'passing_year': passing_year,
+                'batch': batch_val,
+                'company': company,
+                'position': position,
+                'package_lpa': package_lpa,
+                'specialization': specialization,
+                'about': about,
+                'placement_date': placement_date or datetime.now().strftime('%Y-%m-%d'),
+                'email': email or f"{name.lower().replace(' ', '.')}@example.com",
+                'phone': phone or '+91-0000000000'
+            }
+
+            placed_students_collection.insert_one(student_data)
+            inserted += 1
+
+        except Exception as e:
+            errors += 1
+            error_msgs.append(f'Row {idx}: {str(e)}')
+
+    summary = f'Imported: {inserted}. Skipped (duplicates/missing id): {skipped}. Errors: {errors}.'
+    if errors:
+        summary += ' Check logs for details.'
+    flash(summary, 'success' if inserted else 'error')
+    return redirect(url_for('admin_dashboard'))
+
 @app.route('/add-student', methods=['GET', 'POST'])
 def add_student():
     if not is_admin_logged_in():
